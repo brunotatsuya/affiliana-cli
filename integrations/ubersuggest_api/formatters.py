@@ -103,28 +103,16 @@ def format_get_keyword_report(
         KeywordReport: The formatted keyword report.
 
     """
-    suggestions = suggestions_report["report"] if suggestions_report else None
-
     all_suggestions = extract_and_filter_kws(
         matching_keywords["suggestions"], language, loc_id, "MATCH"
     )
 
+    suggestions = suggestions_report["report"] if suggestions_report else None
+
     if suggestions:
-        all_suggestions = [
-            *extract_and_filter_kws(
-                suggestions["questions"]["keywords"], language, loc_id, "QUESTION"
-            ),
-            *extract_and_filter_kws(
-                suggestions["prepositions"]["keywords"], language, loc_id, "PREPOSITION"
-            ),
-            *extract_and_filter_kws(
-                suggestions["comparisons"]["keywords"], language, loc_id, "COMPARISON"
-            ),
-            *extract_and_filter_kws(
-                suggestions["suggestions"]["keywords"], language, loc_id, "SUGGESTION"
-            ),
-            *all_suggestions,
-        ]
+        all_suggestions += extract_and_filter_kws(
+            suggestions["suggestions"]["keywords"], language, loc_id, "SUGGESTION"
+        )
 
     serp_entries = extract_serp_entries(serp_analysis["serpEntries"])
 

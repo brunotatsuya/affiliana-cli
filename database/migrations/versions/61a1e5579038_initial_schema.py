@@ -26,7 +26,7 @@ def upgrade() -> None:
     sa.Column('keyword', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('language', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('loc_id', sa.Integer(), nullable=False),
-    sa.Column('type', sa.Enum('PRIMARY', 'QUESTION', 'PREPOSITION', 'COMPARISON', 'SUGGESTION', 'MATCH', name='keywordtypeenum'), nullable=True),
+    sa.Column('type', sa.Enum('PRIMARY', 'SUGGESTION', 'MATCH', name='keywordtypeenum'), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )

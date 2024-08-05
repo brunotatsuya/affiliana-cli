@@ -1,8 +1,7 @@
 import inject
-from typing import List
-from functional import seq
 
 from monitoring import Logger, LogTypeEnum
+from app.exceptions import NoDataFromSourceException, DataFetchError
 from app.interfaces.dtos.keyword_report import TypedKeyword
 from app.repositories.keywords_repository import KeywordsRepository
 from app.repositories.niches_repository import NichesRepository
@@ -37,6 +36,10 @@ class NicheResearch:
             niche (str): The niche to fetch data for.
             subniche (str): The subniche to fetch data for.
         """
+        # Prepare niche and subniche names
+        niche = self.format_name(niche)
+        subniche = self.format_name(subniche)
+
         # If the niche already has keywords, the method returns early without fetching any data
         db_niche = self.niches_repository.find_or_insert_niche(niche, subniche)
         if len(db_niche.keywords) > 0:
@@ -49,39 +52,45 @@ class NicheResearch:
         # Define primary keyword
         primary_kw = "best " + subniche
 
+        # Build and fetch suggestion keywords
         self.logger.notify(
-           f"Generating and fetching suggestions for primary keyword '{primary_kw}'",
-           LogTypeEnum.INFO,
+            f"Generating and fetching suggestions for primary keyword '{primary_kw}'",
+            LogTypeEnum.INFO,
         )
 
-        # Build and fetch suggestion keywords
-        #base_suggestion_keywords = self.get_base_keywords(primary_kw)
-        #suggestions = [
-        #    TypedKeyword(keyword=sk, type=)
-        #    for bsk in base_suggestion_keywords
-        #    for sk in self.google_suggest_client.get_suggestions(bsk.keyword)
-        #]
+        try:
+            suggestions = self.google_suggest_client.get_suggestions(primary_kw)
+        except DataFetchError as e:
+            self.logger.notify(e, LogTypeEnum.ERROR)
+            return
+
         suggestions = [
-           TypedKeyword(keyword=sk, type="SUGGESTION")
-           for sk in self.google_suggest_client.get_suggestions(primary_kw)
+            TypedKeyword(keyword=sk, type="SUGGESTION") for sk in suggestions
         ]
 
+        # Fetch report for primary keyword
         self.logger.notify(
             f"Fetching report for primary keyword '{primary_kw}'",
             LogTypeEnum.INFO,
         )
 
-        # Fetch report for primary keyword
-        primary_kw_report = self.ubersuggest_api_client.get_keyword_report(
-            primary_kw, suggestions
-        )
+        try:
+            primary_kw_report = self.ubersuggest_api_client.get_keyword_report(
+                primary_kw, suggestions
+            )
+        except NoDataFromSourceException as e:
+            self.logger.notify(e, LogTypeEnum.WARNING)
+            return
+        except DataFetchError as e:
+            self.logger.notify(e, LogTypeEnum.ERROR)
+            return
 
+        # Save report to the database
         self.logger.notify(
             f"Saving data in the database",
             LogTypeEnum.INFO,
         )
 
-        # Save report to the database
         self.keywords_repository.upsert_keyword_report(primary_kw_report, db_niche.id)
 
         self.logger.notify(
@@ -89,107 +98,17 @@ class NicheResearch:
             LogTypeEnum.SUCCESS,
         )
 
-    def get_base_keywords(self, keyword: str) -> List[TypedKeyword]:
+    def format_name(self, name: str):
         """
-        Generates a list of base keywords with their type for getting further suggestions.
+        Formats the niche or subniche name by removing any special characters and spaces.
 
         Args:
-            keyword (str): The base keyword to generate suggestions for.
+            name (str): The name of the niche or subniche to format.
 
         Returns:
-            List[TypedKeyword]: A list of typed base suggestion keywords.
+            str: The formatted niche or subniche name.
         """
-        question_base_keywords = (
-            seq(self.get_question_base_keywords(keyword))
-            .map(lambda kw: TypedKeyword(keyword=kw, type="QUESTION"))
-            .to_list()
-        )
-        preposition_base_keywords = (
-            seq(self.get_preposition_base_keywords(keyword))
-            .map(lambda kw: TypedKeyword(keyword=kw, type="PREPOSITION"))
-            .to_list()
-        )
-        comparison_base_keywords = (
-            seq(self.get_comparison_base_keywords(keyword))
-            .map(lambda kw: TypedKeyword(keyword=kw, type="COMPARISON"))
-            .to_list()
-        )
-        suggestion_base_keywords = (
-            seq(self.get_suggestion_base_keywords(keyword))
-            .map(lambda kw: TypedKeyword(keyword=kw, type="SUGGESTION"))
-            .to_list()
-        )
-
-        return [
-            *question_base_keywords,
-            *preposition_base_keywords,
-            *comparison_base_keywords,
-            *suggestion_base_keywords,
-        ]
-
-    def get_question_base_keywords(self, keyword: str) -> List[str]:
-        """
-        Generates a list of base question keywords for getting further suggestions.
-
-        Args:
-            keyword (str): The base keyword to generate suggestions for.
-
-        Returns:
-            List[str]: A list of base question suggestion keywords.
-        """
-        question_terms = [
-            "why",
-            "where",
-            "can",
-            "who",
-            "which",
-            "will",
-            "when",
-            "what",
-            "are",
-            "how",
-            "how many",
-            "how much",
-            "how often",
-        ]
-        return [f"{term} {keyword}" for term in question_terms]
-
-    def get_preposition_base_keywords(self, keyword: str) -> List[str]:
-        """
-        Generates a list of base preposition keywords for getting further suggestions.
-
-        Args:
-            keyword (str): The base keyword to generate suggestions for.
-
-        Returns:
-            List[str]: A list of base preposition suggestion keywords.
-        """
-        preposition_terms = ["is", "for", "near", "without", "to", "with"]
-        return [f"{term} {keyword}" for term in preposition_terms]
-
-    def get_comparison_base_keywords(self, keyword: str) -> List[str]:
-        """
-        Generates a list of base comparison keywords for getting further suggestions.
-
-        Args:
-            keyword (str): The base keyword to generate suggestions for.
-
-        Returns:
-            List[str]: A list of base comparison suggestion keywords.
-        """
-        comparison_terms = ["vs", "versus", "and", "like"]
-        return [f"{keyword} {term}" for term in comparison_terms]
-
-    def get_suggestion_base_keywords(self, keyword: str) -> List[str]:
-        """
-        Generates a list of base keywords for getting further suggestions.
-
-        Args:
-            keyword (str): The base keyword to generate suggestions for.
-
-        Returns:
-            List[str]: A list of base suggestion keywords.
-        """
-        numered_suggestions = [f"{keyword} {i}" for i in range(0, 11)]
-        lettered_suggestions = [f"{keyword} {chr(97 + i)}" for i in range(0, 26)]
-        return [keyword, f"{keyword} "] + numered_suggestions + lettered_suggestions
+        use_space_for = ["-"]
+        for char in use_space_for:
+            name = name.replace(char, " ")
+        return name.lower()

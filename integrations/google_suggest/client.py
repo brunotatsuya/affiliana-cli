@@ -1,6 +1,7 @@
 from typing import List
 import inject
 
+from app.exceptions import DataFetchError
 from integrations.google_suggest.formatters import format_get_suggestions
 from .constants import DEFAULT_COUNTRY, DEFAULT_LANGUAGE
 from ..constants import HttpMethodEnum
@@ -33,11 +34,14 @@ class GoogleSuggestClient:
 
         Returns:
             List[str]: A list of search suggestions.
+
+        Raises:
+            DataFetchError: If the request fails.
         """
         uri = f"{self.base_uri}/complete/search?client=chrome&q={query}&hl={language}&gl={country}"
-        response = self.http_client.request(HttpMethodEnum.GET, uri)
+        response = self.http_client.request(HttpMethodEnum.GET, uri, headers={})
         if response.status_code != 200:
-            raise Exception(
+            raise DataFetchError(
                 f"Failed to get suggestions: {response.text} - {response.status_code}"
             )
         return format_get_suggestions(response.json())

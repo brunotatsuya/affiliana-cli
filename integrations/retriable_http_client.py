@@ -29,6 +29,7 @@ class RetriableHttpClient:
         self,
         method: HttpMethodEnum,
         uri: str,
+        headers: dict,
         retry_times: int = 0,
         cooldown: int = 0,
         before_retry: Optional[callable] = None,
@@ -41,9 +42,10 @@ class RetriableHttpClient:
         Args:
             method (HttpMethodEnum): The HTTP method.
             uri (str): The URI to send the request to.
+            headers (dict): The headers to include in the request.
             retry_times (int, optional): The number of times to retry the request if it fails. Default is 0.
             cooldown (int, optional): The cooldown time in seconds between retries. Default is 0.
-            before_retry (callable, optional): A function to execute before each retry. Default is None.
+            before_retry (callable, optional): A function to execute before each retry. Can return new headers. Default is None.
             session (requests.Session, optional): The requests session to use. Default is None.
             **kwargs: Additional keyword arguments to pass to the requests library.
 
@@ -51,7 +53,7 @@ class RetriableHttpClient:
             requests.Response: The response object from the HTTP request.
 
         Raises:
-            Exception: If the provided HTTP method is not supported.
+            ValueError: If the provided HTTP method is not supported.
         """
 
         if method in HttpMethodEnum.__members__.values():
@@ -59,16 +61,21 @@ class RetriableHttpClient:
                 f"Making {method.value.upper()} request to {uri}", LogTypeEnum.DEBUG
             )
             if session:
-                response = session.request(method.value, uri, **kwargs)
+                response = session.request(method.value, uri, headers=headers, **kwargs)
             else:
-                response = requests.request(method.value, uri, **kwargs)
+                response = requests.request(
+                    method.value, uri, headers=headers, **kwargs
+                )
             if response.status_code not in SUCCESSFUL_STATUS_CODES and retry_times:
                 time.sleep(cooldown)
                 if before_retry:
-                    before_retry()
+                    new_headers = before_retry()
+                    if new_headers:
+                        headers = new_headers
                 response = self.request(
                     method,
                     uri,
+                    headers,
                     retry_times - 1,
                     cooldown,
                     before_retry,
@@ -76,4 +83,4 @@ class RetriableHttpClient:
                     **kwargs,
                 )
             return response
-        raise Exception(f'Method "{method.value}" is invalid.')
+        raise ValueError(f'Method "{method.value}" is invalid.')

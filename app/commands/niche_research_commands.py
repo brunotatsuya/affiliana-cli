@@ -32,7 +32,7 @@ def perform_from_file_command(
 
 @inject.params(niche_research=NicheResearch)
 def perform(niche: str, subniche: str, niche_research: NicheResearch):
-    niche_research.fetch_data(niche.lower(), subniche.lower())
+    niche_research.fetch_data(niche, subniche)
 
 
 @inject.params(niche_research=NicheResearch, logger=Logger)
@@ -43,7 +43,7 @@ def perform_from_file(filepath: str, niche_research: NicheResearch, logger: Logg
             try:
                 for line in file:
                     niche, subniche = line.strip().split(",")
-                    pairs.append((niche.lower(), subniche.lower()))
+                    pairs.append((niche, subniche))
             except:
                 logger.notify(
                     "Invalid file format. Please provide a file with a pair of niche and subniche per line.",
@@ -57,11 +57,4 @@ def perform_from_file(filepath: str, niche_research: NicheResearch, logger: Logg
         raise Exit(code=1)
 
     for niche, subniche in pairs:
-        #try:
         niche_research.fetch_data(niche, subniche)
-        #except Exception as e:
-        #    logger.notify(
-        #        f"An error occurred while fetching data for niche '{niche}' and subniche '{subniche}': {str(e)}",
-        #        LogTypeEnum.WARNING,
-        #    )
-        #    continue
