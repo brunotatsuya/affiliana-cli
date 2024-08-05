@@ -1,0 +1,281 @@
+{
+    "suggestionCount": 3883,
+    "suggestions": [
+        {
+            "keyword": "cat toys for cat",
+            "competition": 1.0,
+            "volume": 74000,
+            "cpc": 1.06,
+            "cpcDollars": 1.06,
+            "sd": 62,
+            "updated_at": 1721591741,
+            "pd": 100
+        },
+        {
+            "keyword": "cat toys toys",
+            "competition": 1.0,
+            "volume": 60500,
+            "cpc": 1.115,
+            "cpcDollars": 1.115,
+            "sd": 62,
+            "updated_at": null,
+            "pd": 100
+        },
+        {
+            "keyword": "cat toys cat toys",
+            "competition": 1.0,
+            "volume": 60500,
+            "cpc": 1.31,
+            "cpcDollars": 1.31,
+            "sd": 52,
+            "updated_at": 1704869236,
+            "pd": 100
+        },
+        {
+            "keyword": "recommended cat toys",
+            "competition": 0.99,
+            "volume": 14800,
+            "cpc": 1.15,
+            "cpcDollars": 1.15,
+            "sd": 53,
+            "updated_at": 1721596506,
+            "pd": 99
+        },
+        {
+            "keyword": "interactive cat toys",
+            "competition": 1.0,
+            "volume": 12100,
+            "cpc": 1.34,
+            "cpcDollars": 1.34,
+            "sd": 37,
+            "updated_at": 1719129630,
+            "pd": 100
+        },
+        {
+            "keyword": "good cat toys",
+            "competition": 1.0,
+            "volume": 12100,
+            "cpc": 1.29,
+            "cpcDollars": 1.29,
+            "sd": 52,
+            "updated_at": 1719130342,
+            "pd": 100
+        },
+        {
+            "keyword": "jelly cat toys",
+            "competition": 1.0,
+            "volume": 9900,
+            "cpc": 0.32,
+            "cpcDollars": 0.32,
+            "sd": 28,
+            "updated_at": 1719139569,
+            "pd": 100
+        },
+        {
+            "keyword": "chew cat toys",
+            "competition": 1.0,
+            "volume": 6600,
+            "cpc": 1.1,
+            "cpcDollars": 1.1,
+            "sd": 21,
+            "updated_at": 1719172653,
+            "pd": 100
+        },
+        {
+            "keyword": "cat toys amazon",
+            "competition": 1.0,
+            "volume": 6600,
+            "cpc": 0.89,
+            "cpcDollars": 0.89,
+            "sd": 27,
+            "updated_at": 1719172303,
+            "pd": 100
+        },
+        {
+            "keyword": "teething cat toys",
+            "competition": 1.0,
+            "volume": 5400,
+            "cpc": 1.06,
+            "cpcDollars": 1.06,
+            "sd": 28,
+            "updated_at": 1719178871,
+            "pd": 100
+        },
+        {
+            "keyword": "childrens cat toys",
+            "competition": 1.0,
+            "volume": 4400,
+            "cpc": 1.38,
+            "cpcDollars": 1.38,
+            "sd": 55,
+            "updated_at": 1696632951,
+            "pd": 100
+        },
+        {
+            "keyword": "cat toys that move",
+            "competition": 1.0,
+            "volume": 3600,
+            "cpc": 1.31,
+            "cpcDollars": 1.31,
+            "sd": 21,
+            "updated_at": 1719221563,
+            "pd": 100
+        },
+        {
+            "keyword": "spring cat toys",
+            "competition": 1.0,
+            "volume": 3600,
+            "cpc": 0.88,
+            "cpcDollars": 0.88,
+            "sd": 19,
+            "updated_at": 1719213310,
+            "pd": 100
+        },
+        {
+            "keyword": "do it yourself cat toys",
+            "competition": 1.0,
+            "volume": 3600,
+            "cpc": 0.73,
+            "cpcDollars": 0.73,
+            "sd": 36,
+            "updated_at": 1721615520,
+            "pd": 100
+        },
+        {
+            "keyword": "cat toys laser",
+            "competition": 1.0,
+            "volume": 2900,
+            "cpc": 0.78,
+            "cpcDollars": 0.78,
+            "sd": 21,
+            "updated_at": 1721972543,
+            "pd": 100
+        },
+        {
+            "keyword": "cat toys mouse",
+            "competition": 1.0,
+            "volume": 2900,
+            "cpc": 1.13,
+            "cpcDollars": 1.13,
+            "sd": 21,
+            "updated_at": 1719236007,
+            "pd": 100
+        },
+        {
+            "keyword": "stuffed cat toys",
+            "competition": 1.0,
+            "volume": 2900,
+            "cpc": 0.74,
+            "cpcDollars": 0.74,
+            "sd": 16,
+            "updated_at": 1719226302,
+            "pd": 100
+        },
+        {
+            "keyword": "chewy cat toys",
+            "competition": 1.0,
+            "volume": 2900,
+            "cpc": 0.82,
+            "cpcDollars": 0.82,
+            "sd": 19,
+            "updated_at": 1719235843,
+            "pd": 100
+        },
+        {
+            "keyword": "cat toys crochet",
+            "competition": 0.96,
+            "volume": 2900,
+            "cpc": 0.41,
+            "cpcDollars": 0.41,
+            "sd": 51,
+            "updated_at": 1713635723,
+            "pd": 96
+        },
+        {
+            "keyword": "plush cat toys",
+            "competition": 0.99,
+            "volume": 2900,
+            "cpc": 0.8,
+            "cpcDollars": 0.8,
+            "sd": 21,
+            "updated_at": 1721071652,
+            "pd": 99
+        },
+        {
+            "keyword": "ball cat toys"
+        },
+        {
+            "keyword": "for cat toys"
+        },
+        {
+            "keyword": "radio controlled cat toys"
+        },
+        {
+            "keyword": "walmart cat toys"
+        },
+        {
+            "keyword": "strange cat toys"
+        },
+        {
+            "keyword": "feathered cat toys"
+        },
+        {
+            "keyword": "cat toys da bird"
+        },
+        {
+            "keyword": "bored cat toys"
+        },
+        {
+            "keyword": "best cat toys interactive"
+        },
+        {
+            "keyword": "radio control cat toys"
+        },
+        {
+            "keyword": "snake cat toys"
+        },
+        {
+            "keyword": "puzzle cat toys"
+        },
+        {
+            "keyword": "talking tom cat toys"
+        },
+        {
+            "keyword": "cat toys kickers"
+        },
+        {
+            "keyword": "fishing pole cat toys"
+        },
+        {
+            "keyword": "fish cat toys"
+        },
+        {
+            "keyword": "making cat toys at home"
+        },
+        {
+            "keyword": "cat toys feathers"
+        },
+        {
+            "keyword": "thunder cat toys"
+        },
+        {
+            "keyword": "cat toys to crochet"
+        },
+        {
+            "keyword": "great interactive cat toys"
+        }
+    ],
+    "nextKey": 98,
+    "searched_keywords": [
+        {
+            "keyword": "cat toys",
+            "competition": 1.0,
+            "volume": 60500,
+            "cpc": 1.31,
+            "cpcDollars": 1.31,
+            "sd": 53,
+            "updated_at": 1720126199,
+            "pd": 100
+        }
+    ]
+}

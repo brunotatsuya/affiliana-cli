@@ -1,0 +1,99 @@
+import pytest
+
+from app.interfaces.dtos.keyword_report import KeywordReport
+
+
+@pytest.fixture
+def keyword_report():
+    return KeywordReport.model_validate(
+        {
+            "info": {
+                "keyword": "test keyword",
+                "language": "en",
+                "loc_id": 2840,
+                "competition": 0.5,
+                "volume": 1000,
+                "cpc": 0.5,
+                "cpc_dollars": 0.5,
+                "sd": 100,
+                "pd": 100,
+                "type": "PRIMARY",
+                "updated_at": "2021-01-01T00:00:00",
+            },
+            "serp_analysis": {
+                "serp_entries": [
+                    {
+                        "url": "https://example.com",
+                        "title": "Example",
+                        "domain": "example.com",
+                        "position": 1,
+                        "type": "organic",
+                        "clicks": 100,
+                        "domain_authority": 50,
+                        "facebook_shares": 100,
+                        "pinterest_shares": 100,
+                        "linkedin_shares": 100,
+                        "google_shares": 100,
+                        "reddit_shares": 100,
+                    },
+                    {
+                        "url": "https://example2.com",
+                        "title": "Example2",
+                        "domain": "example2.com",
+                        "position": 2,
+                        "type": "organic",
+                        "clicks": 101,
+                        "domain_authority": 51,
+                        "facebook_shares": 101,
+                        "pinterest_shares": 101,
+                        "linkedin_shares": 101,
+                        "google_shares": 101,
+                        "reddit_shares": 101,
+                    },
+                ],
+                "new_data": True,
+                "updated_at": "2021-01-01T00:00:00",
+            },
+            "suggestions": [
+                {
+                    "keyword": "question suggestion",
+                    "language": "en",
+                    "loc_id": 2840,
+                    "competition": 0.5,
+                    "volume": 1000,
+                    "cpc": 0.5,
+                    "cpc_dollars": 0.5,
+                    "sd": 100,
+                    "pd": 100,
+                    "type": "QUESTION",
+                    "updated_at": "2021-01-01T00:00:00",
+                },
+                {
+                    "keyword": "preposition suggestion",
+                    "language": "en",
+                    "loc_id": 2840,
+                    "competition": 0.5,
+                    "volume": 1000,
+                    "cpc": 0.5,
+                    "cpc_dollars": 0.5,
+                    "sd": 100,
+                    "pd": 100,
+                    "type": "PREPOSITION",
+                    "updated_at": "2021-01-01T00:00:00",
+                },
+                {
+                    "keyword": "comparison suggestion",
+                    "language": "en",
+                    "loc_id": 2840,
+                    "competition": 0.5,
+                    "volume": 1000,
+                    "cpc": 0.5,
+                    "cpc_dollars": 0.5,
+                    "sd": 100,
+                    "pd": 100,
+                    "type": "COMPARISON",
+                    "updated_at": "2021-01-01T00:00:00",
+                },
+            ],
+        }
+    )

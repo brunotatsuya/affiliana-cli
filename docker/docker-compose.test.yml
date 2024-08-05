@@ -1,0 +1,13 @@
+version: '3.9'
+
+name: market_research_test
+
+services:
+  postgres:
+    image: postgres:14
+    container_name: postgres-database-test
+    env_file: ../.env.test
+    ports:
+      - 6002:5432
+    volumes:
+      - ./db/pgsql_test:/var/lib/postgresql/data

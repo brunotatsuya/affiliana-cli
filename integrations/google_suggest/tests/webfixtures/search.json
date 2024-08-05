@@ -1,0 +1,128 @@
+[
+    "cat toys",
+    [
+        "cat toys amazon",
+        "cat toys that move",
+        "cat toys for kids",
+        "cat toys near me",
+        "cat toys walmart",
+        "cat toys interactive",
+        "cat toys for older cats",
+        "cat toys for active cats",
+        "cat toys for kittens",
+        "cat toys that move on their own",
+        "cat toys nearby",
+        "cat toys without catnip",
+        "cat toys petsmart",
+        "cat toys diy",
+        "cat toys for girls"
+    ],
+    [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+    ],
+    [],
+    {
+        "google:clientdata": {
+            "bpc": false,
+            "tlw": false
+        },
+        "google:suggestrelevance": [
+            601,
+            600,
+            562,
+            561,
+            560,
+            559,
+            558,
+            557,
+            556,
+            555,
+            554,
+            553,
+            552,
+            551,
+            550
+        ],
+        "google:suggestsubtypes": [
+            [
+                512,
+                433,
+                131
+            ],
+            [
+                512
+            ],
+            [
+                512
+            ],
+            [
+                512
+            ],
+            [
+                512
+            ],
+            [
+                512
+            ],
+            [
+                512
+            ],
+            [
+                512
+            ],
+            [
+                512
+            ],
+            [
+                512
+            ],
+            [
+                512
+            ],
+            [
+                512
+            ],
+            [
+                512
+            ],
+            [
+                512
+            ],
+            [
+                512
+            ]
+        ],
+        "google:suggesttype": [
+            "QUERY",
+            "QUERY",
+            "QUERY",
+            "QUERY",
+            "QUERY",
+            "QUERY",
+            "QUERY",
+            "QUERY",
+            "QUERY",
+            "QUERY",
+            "QUERY",
+            "QUERY",
+            "QUERY",
+            "QUERY",
+            "QUERY"
+        ],
+        "google:verbatimrelevance": 1300
+    }
+]
