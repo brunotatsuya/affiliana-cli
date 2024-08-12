@@ -76,7 +76,7 @@ class NicheResearch:
 
         try:
             primary_kw_report = self.ubersuggest_api_client.get_keyword_report(
-                primary_kw, suggestions
+                primary_kw
             )
         except NoDataFromSourceException as e:
             self.logger.notify(e, LogTypeEnum.WARNING)

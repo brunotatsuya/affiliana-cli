@@ -16,5 +16,4 @@ class Config(BaseSettings):
     POSTGRES_PASSWORD: str
     POSTGRES_DB: str
     ECHO_POSTGRES: bool
-    UBERSUGGEST_EMAILS: str
-    UBERSUGGEST_PASSWORDS: str
+    PROXY_PROVIDER_CREDENTIALS: str

@@ -12,11 +12,10 @@ def test_should_format_get_keyword_report_correctly_when_all_data_is_provided(
     keyword_info: dict,
     matching_keywords: dict,
     serp_analysis: dict,
-    suggestions_report: dict,
 ):
 
     keyword_report = format_get_keyword_report(
-        keyword_info, matching_keywords, serp_analysis, suggestions_report
+        keyword_info, matching_keywords, serp_analysis, "en", 2840
     )
 
     # Check the keyword report info
@@ -74,20 +73,20 @@ def test_should_format_get_keyword_report_correctly_when_all_data_is_provided(
     assert keyword_report.serp_analysis.serp_entries[-1].google_shares == None
     assert keyword_report.serp_analysis.serp_entries[-1].reddit_shares == None
 
-    # Check suggestions
-    assert len(keyword_report.suggestions) == 65
-    assert keyword_report.suggestions[0].keyword == "how make cat toys"
+    # Check matching suggestions
+    assert len(keyword_report.suggestions) == 20
+    assert keyword_report.suggestions[0].keyword == "cat toys for cat"
     assert keyword_report.suggestions[0].language == "en"
     assert keyword_report.suggestions[0].loc_id == 2840
-    assert keyword_report.suggestions[0].competition == 0.29
-    assert keyword_report.suggestions[0].volume == 720
-    assert keyword_report.suggestions[0].cpc == 0.71
-    assert keyword_report.suggestions[0].cpc_dollars == 0.71
-    assert keyword_report.suggestions[0].sd == 27
-    assert keyword_report.suggestions[0].pd == 28
-    assert keyword_report.suggestions[0].type == "QUESTION"
+    assert keyword_report.suggestions[0].competition == 1.0
+    assert keyword_report.suggestions[0].volume == 74000
+    assert keyword_report.suggestions[0].cpc == 1.06
+    assert keyword_report.suggestions[0].cpc_dollars == 1.06
+    assert keyword_report.suggestions[0].sd == 62
+    assert keyword_report.suggestions[0].pd == 100
+    assert keyword_report.suggestions[0].type == "MATCH"
     assert keyword_report.suggestions[0].updated_at == datetime(
-        2023, 12, 26, 8, 29, 42, 0, timezone.utc
+        2024, 7, 21, 19, 55, 41, 0, timezone.utc
     )
     assert keyword_report.suggestions[-1].keyword == "plush cat toys"
     assert keyword_report.suggestions[-1].language == "en"
@@ -119,16 +118,7 @@ def test_should_format_get_keyword_report_correctly_when_all_data_is_provided(
         ("newData", "serp_analysis"),
         ("updated_at", "serp_analysis"),
         ("serpEntries", "serp_analysis"),
-        ("report", "suggestions_report"),
-        ("questions", 'suggestions_report["report"]'),
-        ("prepositions", 'suggestions_report["report"]'),
-        ("comparisons", 'suggestions_report["report"]'),
-        ("suggestions", 'suggestions_report["report"]'),
         ("suggestions", "matching_keywords"),
-        ("keywords", 'suggestions_report["report"]["questions"]'),
-        ("keywords", 'suggestions_report["report"]["prepositions"]'),
-        ("keywords", 'suggestions_report["report"]["comparisons"]'),
-        ("keywords", 'suggestions_report["report"]["suggestions"]'),
     ],
 )
 def test_should_raise_exception_if_any_data_is_missing(
@@ -137,20 +127,15 @@ def test_should_raise_exception_if_any_data_is_missing(
     keyword_info: dict,
     matching_keywords: dict,
     serp_analysis: dict,
-    suggestions_report: dict,
 ):
     eval(f"{target_dict}.pop('{takeout_prop}')")
     with pytest.raises(Exception):
-        format_get_keyword_report(
-            keyword_info, matching_keywords, serp_analysis, suggestions_report
-        )
+        format_get_keyword_report(keyword_info, matching_keywords, serp_analysis)
 
 
-def test_should_filter_out_suggestion_keywords_without_volume(suggestions_report: dict):
-    suggestion_keywords = suggestions_report["report"]["questions"]["keywords"]
+def test_should_filter_out_matching_keywords_without_volume(matching_keywords: dict):
+    suggestion_keywords = matching_keywords["suggestions"]
 
-    filtered_keywords = extract_and_filter_kws(
-        suggestion_keywords, "en", 2840, "QUESTION"
-    )
+    filtered_keywords = extract_and_filter_kws(suggestion_keywords, "en", 2840, "MATCH")
 
-    assert len(filtered_keywords) == 5
+    assert len(filtered_keywords) == 20

@@ -29,9 +29,9 @@ class RetriableHttpClient:
         self,
         method: HttpMethodEnum,
         uri: str,
-        headers: dict,
-        retry_times: int = 0,
-        cooldown: int = 0,
+        headers: Optional[dict] = {},
+        retry_times: Optional[int] = 0,
+        cooldown: Optional[int] = 0,
         before_retry: Optional[callable] = None,
         session: Optional[requests.Session] = None,
         **kwargs,
@@ -42,7 +42,7 @@ class RetriableHttpClient:
         Args:
             method (HttpMethodEnum): The HTTP method.
             uri (str): The URI to send the request to.
-            headers (dict): The headers to include in the request.
+            headers (dict, optional): The headers to include in the request. Defaults is {}.
             retry_times (int, optional): The number of times to retry the request if it fails. Default is 0.
             cooldown (int, optional): The cooldown time in seconds between retries. Default is 0.
             before_retry (callable, optional): A function to execute before each retry. Can return new headers. Default is None.
@@ -81,6 +81,11 @@ class RetriableHttpClient:
                     before_retry,
                     session,
                     **kwargs,
+                )
+            if response.headers.get("X-RateLimit-Remaining"):
+                self.logger.notify(
+                    f"Remaining rate limit: {response.headers.get('X-RateLimit-Remaining')}",
+                    LogTypeEnum.DEBUG,
                 )
             return response
         raise ValueError(f'Method "{method.value}" is invalid.')
