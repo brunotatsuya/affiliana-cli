@@ -228,9 +228,9 @@ class TestKeywordsRepository:
             ).all()
 
             assert len(suggested_keywords) == 3
-            assert suggested_keywords[0].keyword == "question suggestion"
-            assert suggested_keywords[1].keyword == "preposition suggestion"
-            assert suggested_keywords[2].keyword == "comparison suggestion"
+            assert suggested_keywords[0].keyword == "match suggestion 1"
+            assert suggested_keywords[1].keyword == "match suggestion 2"
+            assert suggested_keywords[2].keyword == "match suggestion 3"
 
     def test_should_not_create_suggested_keywords_when_upserting_report_and_suggested_keywords_exist(
         self,
@@ -243,7 +243,7 @@ class TestKeywordsRepository:
         keywords_respository.upsert_keyword_report(keyword_report, niche.id)
 
         # Insert a new keyword report
-        keyword_report.suggestions[0].keyword = "question suggestion 2"
+        keyword_report.suggestions[0].keyword = "match suggestion 4"
         keywords_respository.upsert_keyword_report(keyword_report, niche.id)
 
         # Assert
@@ -265,25 +265,25 @@ class TestKeywordsRepository:
         keywords_respository.upsert_keyword_report(keyword_report, niche.id)
 
         # Insert a new report
-        keyword_report.suggestions[0].keyword = "question suggestion 2"
+        keyword_report.suggestions[0].keyword = "match suggestion 4"
         keywords_respository.upsert_keyword_report(keyword_report, niche.id)
 
         # Assert
         with database_connection.session() as session:
-            preposition_suggestion_kw = session.exec(
+            match1 = session.exec(
                 select(Keyword)
                 .options(joinedload(Keyword.metrics_reports))
-                .where(Keyword.keyword == "preposition suggestion")
+                .where(Keyword.keyword == "match suggestion 2")
             ).first()
 
-            question_suggestion_2_kw = session.exec(
+            match5 = session.exec(
                 select(Keyword)
                 .options(joinedload(Keyword.metrics_reports))
-                .where(Keyword.keyword == "question suggestion 2")
+                .where(Keyword.keyword == "match suggestion 4")
             ).first()
 
-            assert len(preposition_suggestion_kw.metrics_reports) == 2
-            assert len(question_suggestion_2_kw.metrics_reports) == 1
+            assert len(match1.metrics_reports) == 2
+            assert len(match5.metrics_reports) == 1
 
     def test_should_associate_suggested_keywords_to_suggestion_set_when_upserting_report(
         self,
@@ -304,12 +304,12 @@ class TestKeywordsRepository:
             ).first()
 
             assert len(suggestion_set.suggested_keywords) == 3
-            assert suggestion_set.suggested_keywords[0].keyword == "question suggestion"
+            assert suggestion_set.suggested_keywords[0].keyword == "match suggestion 1"
             assert (
-                suggestion_set.suggested_keywords[1].keyword == "preposition suggestion"
+                suggestion_set.suggested_keywords[1].keyword == "match suggestion 2"
             )
             assert (
-                suggestion_set.suggested_keywords[2].keyword == "comparison suggestion"
+                suggestion_set.suggested_keywords[2].keyword == "match suggestion 3"
             )
 
     def test_should_return_existing_keyword_when_searching(

@@ -24,12 +24,3 @@ def serp_analysis() -> dict:
     with open(webfixtures_folder / "serp_analysis.json", "r") as file:
         serp_analysis = json.load(file)
     return serp_analysis
-
-
-@pytest.fixture
-def suggestions_report() -> dict:
-    with open(
-        webfixtures_folder / "keyword_suggestions_info_task_status.json", "r"
-    ) as file:
-        suggestions = json.load(file)
-    return suggestions

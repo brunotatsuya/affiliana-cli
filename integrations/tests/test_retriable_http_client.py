@@ -94,6 +94,33 @@ class TestRetriableHttpClient:
         )
         assert before_retry.call_count == 3
 
+    def test_should_update_headers_if_before_retry_function_returns_new_headers(
+        self,
+        mock_request: Mock,
+        retriable_http_client: RetriableHttpClient,
+    ):
+        mock_request.return_value.status_code = 500
+        before_retry = Mock(return_value={"new_header": "value"})
+        retriable_http_client.request(
+            HttpMethodEnum.GET,
+            "http://example.com",
+            headers={"old_header": "value"},
+            retry_times=1,
+            before_retry=before_retry,
+        )
+        assert mock_request.call_args_list == [
+            call(
+                "GET",
+                "http://example.com",
+                headers={"old_header": "value"},
+            ),
+            call(
+                "GET",
+                "http://example.com",
+                headers={"new_header": "value"},
+            ),
+        ]
+
     def test_should_use_session_if_provided(
         self,
         mock_request: Mock,

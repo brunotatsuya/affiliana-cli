@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import List
 from functional import seq
 
 from app.interfaces.dtos.keyword_report import KeywordReport
@@ -84,7 +84,6 @@ def format_get_keyword_report(
     keyword_info: dict,
     matching_keywords: dict,
     serp_analysis: dict,
-    suggestions_report: Optional[dict],
     language: str,
     loc_id: int,
 ) -> KeywordReport:
@@ -95,7 +94,6 @@ def format_get_keyword_report(
         keyword_info (dict): Information about the keyword.
         matching_keywords (dict): Matching keywords.
         serp_analysis (dict): SERP (Search Engine Results Page) analysis data.
-        suggestions_report (dict, optional): Suggestions report for the keyword.~
         language (str): The language of the keywords.
         loc_id (int): The location ID.
 
@@ -103,16 +101,9 @@ def format_get_keyword_report(
         KeywordReport: The formatted keyword report.
 
     """
-    all_suggestions = extract_and_filter_kws(
+    match_suggestions = extract_and_filter_kws(
         matching_keywords["suggestions"], language, loc_id, "MATCH"
     )
-
-    suggestions = suggestions_report["report"] if suggestions_report else None
-
-    if suggestions:
-        all_suggestions += extract_and_filter_kws(
-            suggestions["suggestions"]["keywords"], language, loc_id, "SUGGESTION"
-        )
 
     serp_entries = extract_serp_entries(serp_analysis["serpEntries"])
 
@@ -139,7 +130,7 @@ def format_get_keyword_report(
             "updated_at": serp_analysis["updated_at"],
             "serp_entries": serp_entries,
         },
-        "suggestions": all_suggestions,
+        "suggestions": match_suggestions,
     }
 
     return KeywordReport.model_validate(formatted_data)

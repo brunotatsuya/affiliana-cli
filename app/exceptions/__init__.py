@@ -1,1 +1,1 @@
-from .data import NoDataFromSourceException, DataFetchError
+from .data import NoDataFromSourceException, DataFetchError, AuthenticationError
