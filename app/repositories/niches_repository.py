@@ -27,13 +27,12 @@ class NichesRepository(BaseRepository):
             )
             return session.exec(statement).first()
 
-    def find_niche(self, niche: str, subniche: str) -> Niche:
+    def find_niche(self, name: str) -> Niche:
         """
-        Find a niche in the database based on the niche and subniche names.
+        Find a niche in the database based its name.
 
         Args:
-            niche (str): The name of the niche.
-            subniche (str): The name of the subniche.
+            name (str): The niche name.
 
         Returns:
             Niche: The found niche object, or None if not found.
@@ -42,18 +41,17 @@ class NichesRepository(BaseRepository):
             statement = (
                 select(Niche)
                 .options(joinedload(Niche.keywords))
-                .where(Niche.niche == niche, Niche.subniche == subniche)
+                .where(Niche.name == name)
             )
             return session.exec(statement).first()
 
-    def find_or_insert_niche(self, niche: str, subniche: str) -> Niche:
+    def find_or_insert_niche(self, name: str) -> Niche:
         """
-        Find a niche in the database based on the niche and subniche names,
+        Find a niche in the database based on its name,
         or insert a new niche if it doesn't exist.
 
         Args:
-            niche (str): The name of the niche.
-            subniche (str): The name of the subniche.
+            name (str): The niche name.
 
         Returns:
             Niche: The found or inserted niche object.
@@ -63,12 +61,11 @@ class NichesRepository(BaseRepository):
         """
         with self.conn.session() as session:
             try:
-                db_niche = self.find_niche(niche, subniche)
+                db_niche = self.find_niche(name)
                 if db_niche:
                     return db_niche
                 niche = Niche(
-                    niche=niche,
-                    subniche=subniche,
+                    name=name,
                     created_at=datetime.now(),
                 )
                 session.add(niche)
