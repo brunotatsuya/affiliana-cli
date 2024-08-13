@@ -12,6 +12,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup Testing Database volume
+        run: mkdir -p ./db/pgsql_test & sudo chown -R 999:999 ./db/pgsql_test & sudo chmod -R 700 ./db/pgsql_test
+
       - name: Setup Testing Database
         uses: hoverkraft-tech/compose-action@v2.0.1
         with:
