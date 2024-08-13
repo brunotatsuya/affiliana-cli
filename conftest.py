@@ -1,12 +1,12 @@
-from logging import Logger
 import inject
 from unittest.mock import MagicMock
 from pathlib import Path
 from alembic.config import Config as AlembicConfig
 from alembic import command
 
-from app.domain.niche_research import NicheResearch
 from config import Config, setup_injector
+from monitoring import Logger
+from app.domain.niche_research import NicheResearch
 from integrations.retriable_http_client import RetriableHttpClient
 
 
