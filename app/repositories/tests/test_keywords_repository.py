@@ -35,12 +35,11 @@ class TestKeywordsRepository:
 
         with database_connection.session() as session:
             niche = session.exec(
-                select(Niche).where(Niche.niche == "Test Niche")
+                select(Niche).where(Niche.name == "Test Niche")
             ).first()
             if not niche:
                 niche = Niche(
-                    niche="Test Niche",
-                    subniche="Test Subniche",
+                    name="Test Niche",
                     created_at=datetime.now(),
                 )
                 session.add(niche)

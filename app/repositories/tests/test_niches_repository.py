@@ -31,9 +31,7 @@ class TestNichesRepository:
         niches_repository: NichesRepository,
     ):
         # Create a new niche in the database
-        niche = Niche(
-            niche="Test Niche", subniche="Test Subniche", created_at=datetime.now()
-        )
+        niche = Niche(name="Test Niche", created_at=datetime.now())
 
         with database_connection.session() as session:
             session.add(niche)
@@ -60,9 +58,7 @@ class TestNichesRepository:
         niches_repository: NichesRepository,
     ):
         # Create a new niche in the database
-        niche = Niche(
-            niche="Test Niche", subniche="Test Subniche", created_at=datetime.now()
-        )
+        niche = Niche(name="Test Niche", created_at=datetime.now())
 
         with database_connection.session() as session:
             session.add(niche)
@@ -70,7 +66,7 @@ class TestNichesRepository:
             session.refresh(niche)
 
             # Find the niche by name
-            searched_niche = niches_repository.find_niche("Test Niche", "Test Subniche")
+            searched_niche = niches_repository.find_niche("Test Niche")
 
             # Assert
             assert searched_niche == niche
@@ -79,9 +75,7 @@ class TestNichesRepository:
         self, niches_repository: NichesRepository
     ):
         # Find a niche that doesn't exist
-        searched_niche = niches_repository.find_niche(
-            "Non Existing Niche", "Non Existing Subniche"
-        )
+        searched_niche = niches_repository.find_niche("Non Existing Niche")
 
         # Assert
         assert searched_niche is None
@@ -92,7 +86,7 @@ class TestNichesRepository:
         niches_repository: NichesRepository,
     ):
         # Insert a new niche
-        niche = niches_repository.find_or_insert_niche("Test Niche", "Test Subniche")
+        niche = niches_repository.find_or_insert_niche("Test Niche")
 
         # Assert
         with database_connection.session() as session:
@@ -107,25 +101,17 @@ class TestNichesRepository:
         niches_repository: NichesRepository,
     ):
         # Create a new niche in the database
-        niche = Niche(
-            niche="Test Niche", subniche="Test Subniche", created_at=datetime.now()
-        )
+        niche = Niche(name="Test Niche", created_at=datetime.now())
 
         with database_connection.session() as session:
             session.add(niche)
             session.commit()
 
             # Insert the existing niche
-            existing_niche = niches_repository.find_or_insert_niche(
-                "Test Niche", "Test Subniche"
-            )
+            existing_niche = niches_repository.find_or_insert_niche("Test Niche")
 
             # Select the existing niches with the provided name
-            niches = session.exec(
-                select(Niche).where(
-                    Niche.niche == "Test Niche", Niche.subniche == "Test Subniche"
-                )
-            ).all()
+            niches = session.exec(select(Niche).where(Niche.name == "Test Niche")).all()
 
             # Assert
             assert existing_niche == niche

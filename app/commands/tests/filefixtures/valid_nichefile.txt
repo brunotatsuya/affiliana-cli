@@ -1,3 +1,3 @@
-cat,cat toys
-dog,dog toys
-fish,fish food
+cat toys
+dog toys
+fish food

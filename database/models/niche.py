@@ -14,8 +14,7 @@ class Niche(SQLModel, table=True):
     __tablename__ = "niches"
 
     id: Optional[int] = Field(default=None, primary_key=True)
-    niche: str
-    subniche: str
+    name: str
 
     created_at: datetime.datetime
 

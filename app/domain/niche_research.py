@@ -28,29 +28,27 @@ class NicheResearch:
         self.ubersuggest_api_client = uberssugest_api_client
         self.logger = logger
 
-    def fetch_data(self, niche: str, subniche: str) -> None:
+    def fetch_data(self, niche: str) -> None:
         """
-        Fetches data related to the specified niche and subniche.
+        Fetches data related to the specified niche.
 
         Args:
             niche (str): The niche to fetch data for.
-            subniche (str): The subniche to fetch data for.
         """
-        # Prepare niche and subniche names
+        # Prepare niche name
         niche = self.format_name(niche)
-        subniche = self.format_name(subniche)
 
         # If the niche already has keywords, the method returns early without fetching any data
-        db_niche = self.niches_repository.find_or_insert_niche(niche, subniche)
+        db_niche = self.niches_repository.find_or_insert_niche(niche)
         if len(db_niche.keywords) > 0:
             self.logger.notify(
-                f"Data for niche '{niche}' and subniche '{subniche}' already exists.",
+                f"Data for niche '{niche}' already exists.",
                 LogTypeEnum.DEBUG,
             )
             return
 
         # Define primary keyword
-        primary_kw = "best " + subniche
+        primary_kw = "best " + niche
 
         # Build and fetch suggestion keywords
         self.logger.notify(
@@ -94,19 +92,19 @@ class NicheResearch:
         self.keywords_repository.upsert_keyword_report(primary_kw_report, db_niche.id)
 
         self.logger.notify(
-            f"Finished fetching data for '{niche}' and subniche '{subniche}'",
+            f"Finished fetching data for '{niche}'",
             LogTypeEnum.SUCCESS,
         )
 
     def format_name(self, name: str):
         """
-        Formats the niche or subniche name by removing any special characters and spaces.
+        Formats the niche name by removing any special characters and spaces.
 
         Args:
-            name (str): The name of the niche or subniche to format.
+            name (str): The name of the niche to format.
 
         Returns:
-            str: The formatted niche or subniche name.
+            str: The formatted niche name.
         """
         use_space_for = ["-"]
         for char in use_space_for:

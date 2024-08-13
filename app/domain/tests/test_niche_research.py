@@ -17,7 +17,7 @@ class TestNicheResearch:
         ]
 
         # Act
-        niche_research.fetch_data("Test Niche", "Test Subniche")
+        niche_research.fetch_data("Test Niche")
 
         # Assert
         niche_research.google_suggest_client.get_suggestions.assert_not_called()
@@ -26,9 +26,8 @@ class TestNicheResearch:
 
     def test_should_format_name_correctly(self, niche_research: NicheResearch):
         assert niche_research.format_name("Test Niche") == "test niche"
-        assert niche_research.format_name("Test Subniche") == "test subniche"
 
-    def test_should_format_niche_and_subniche_names_when_fetching_new_niche(
+    def test_should_format_niche_name_when_fetching_new_niche(
         self, niche_research: NicheResearch
     ):
         # Make sure the niche has no keywords
@@ -39,12 +38,10 @@ class TestNicheResearch:
         niche_research.format_name = MagicMock(return_value="example")
 
         # Act
-        niche_research.fetch_data("Test Niche", "Test Subniche")
+        niche_research.fetch_data("Test Niche")
 
         # Assert
-        niche_research.format_name.assert_has_calls(
-            [call("Test Niche"), call("Test Subniche")]
-        )
+        niche_research.format_name.assert_called_once_with("Test Niche")
 
     def test_should_fetch_keyword_suggestions_for_primary_keyword_when_fetching_new_niche(
         self, niche_research: NicheResearch
@@ -56,11 +53,11 @@ class TestNicheResearch:
         niche_research.google_suggest_client.get_suggestions = Mock(return_value=[])
 
         # Act
-        niche_research.fetch_data("Test Niche", "Test Subniche")
+        niche_research.fetch_data("Test Niche")
 
         # Assert
         niche_research.google_suggest_client.get_suggestions.assert_called_once_with(
-            "best test subniche"
+            "best test niche"
         )
 
     def test_should_upsert_keyword_report_when_fetching_new_niche(
@@ -78,7 +75,7 @@ class TestNicheResearch:
         )
 
         # Act
-        niche_research.fetch_data("Test Niche", "Test Subniche")
+        niche_research.fetch_data("Test Niche")
 
         # Assert
         niche_research.keywords_repository.upsert_keyword_report.assert_called_once_with(
