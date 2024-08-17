@@ -1,5 +1,5 @@
 import datetime
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, Optional
 from sqlmodel import Field, Relationship, SQLModel
 
 from .niche_amazon_product import NicheAmazonProduct
@@ -15,9 +15,10 @@ class AmazonProduct(SQLModel, table=True):
     asin: str = Field(primary_key=True)
     title: str
     price_usd: float
-    rating: float
-    reviews: int
-    url: str
+    rating: Optional[float] = None
+    reviews: Optional[int] = None
+    bought_last_month: Optional[int] = None
+    is_sponsored: bool
     seen_at: datetime.datetime
 
     niches: List["Niche"] = Relationship(

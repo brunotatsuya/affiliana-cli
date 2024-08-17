@@ -1,6 +1,7 @@
 import pytest
 from unittest.mock import MagicMock
 
+from app.exceptions.data import DataFetchError
 from integrations.google_suggest.client import GoogleSuggestClient
 
 
@@ -27,5 +28,5 @@ class TestGoogleSuggestClient:
     ):
         google_suggest_client.http_client.request.return_value.status_code = 500
 
-        with pytest.raises(Exception):
+        with pytest.raises(DataFetchError):
             google_suggest_client.get_suggestions("cat toys")
