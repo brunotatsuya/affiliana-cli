@@ -1,9 +1,11 @@
 from bs4 import BeautifulSoup
+from functional import seq
 
 from app.exceptions.data import DataFormatError
+from app.interfaces.dtos.amazon_product_snapshot import AmazonProductSnapshot
 
 
-def format_search(html: str):
+def format_search(html: str) -> list[AmazonProductSnapshot]:
     """
     Extracts product information from HTML and returns a list of dictionaries.
 
@@ -11,14 +13,7 @@ def format_search(html: str):
         html (str): The HTML content to extract product information from.
 
     Returns:
-        products (list): A list of dictionaries containing product information. Each dictionary has the following keys:
-            - asin (str): The ASIN (Amazon Standard Identification Number) of the product.
-            - title (str): The title of the product.
-            - is_sponsored (bool): Indicates whether the product is sponsored or not.
-            - price_usd (float): The price of the product in USD.
-            - rating (float): The rating of the product.
-            - reviews (int): The number of reviews for the product.
-            - bought_last_month (int): The number of times the product was bought last month.
+        products (List[AmazonProductSnapshot]): A list of products snapshots containing product information at that moment.
 
     Raises:
         DataFormatError: If there is an error while extracting data from the HTML.
@@ -97,6 +92,6 @@ def format_search(html: str):
 
         # Remove duplicates using asin key, keep the first occurrence
         products = {p["asin"]: p for p in list(reversed(products))}.values()
-        return products
+        return seq(products).map(AmazonProductSnapshot.model_validate).to_list()
     except Exception as e:
         raise DataFormatError(f"Failed to extract data from HTML: {e}")
