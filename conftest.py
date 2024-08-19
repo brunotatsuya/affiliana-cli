@@ -6,7 +6,7 @@ from alembic import command
 
 from config import Config, setup_injector
 from monitoring import Logger
-from app.domain.niche_research import NicheResearch
+from app.domain import ProductResearch, NicheResearch
 from integrations.retriable_http_client import RetriableHttpClient
 
 
@@ -15,6 +15,7 @@ def injector_config(binder):
     binder.bind(Logger, MagicMock())
     binder.bind(RetriableHttpClient, MagicMock())
     binder.bind(NicheResearch, MagicMock())
+    binder.bind(ProductResearch, MagicMock())
 
 
 def run_migrations_psql():

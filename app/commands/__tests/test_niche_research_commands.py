@@ -1,11 +1,10 @@
 from pathlib import Path
-from unittest.mock import MagicMock
 import inject
 import pytest
 from typer import Exit
 
 from app.commands.niche_research_commands import perform, perform_from_file
-from app.domain.niche_research import NicheResearch
+from app.domain import NicheResearch
 
 
 class TestNicheResearchCommands:

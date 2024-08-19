@@ -2,9 +2,9 @@ import inject
 
 from monitoring import Logger, LogTypeEnum
 from app.exceptions import NoDataFromSourceException, DataFetchError
+from app.domain.utils import format_niche_name
 from app.interfaces.dtos.keyword_report import TypedKeyword
-from app.repositories.keywords_repository import KeywordsRepository
-from app.repositories.niches_repository import NichesRepository
+from app.repositories import KeywordsRepository, NichesRepository
 from integrations import GoogleSuggestClient, UbersuggestAPIClient
 
 
@@ -36,7 +36,7 @@ class NicheResearch:
             niche (str): The niche to fetch data for.
         """
         # Prepare niche name
-        niche = self.format_name(niche)
+        niche = format_niche_name(niche)
 
         # If the niche already has keywords, the method returns early without fetching any data
         db_niche = self.niches_repository.find_or_insert_niche(niche)
@@ -96,17 +96,3 @@ class NicheResearch:
             LogTypeEnum.SUCCESS,
         )
 
-    def format_name(self, name: str):
-        """
-        Formats the niche name by removing any special characters and spaces.
-
-        Args:
-            name (str): The name of the niche to format.
-
-        Returns:
-            str: The formatted niche name.
-        """
-        use_space_for = ["-"]
-        for char in use_space_for:
-            name = name.replace(char, " ")
-        return name.lower()

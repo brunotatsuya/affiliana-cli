@@ -3,7 +3,7 @@ import inject
 from monitoring import Logger, LogTypeEnum
 from typer import Argument, Typer, Exit
 
-from app.domain.niche_research import NicheResearch
+from app.domain import NicheResearch
 
 niche_research_typer = Typer()
 
