@@ -1,6 +1,7 @@
-from unittest.mock import MagicMock, Mock, call
 import pytest
-from app.domain.niche_research import NicheResearch
+from unittest.mock import Mock, patch
+
+from app.domain import NicheResearch
 
 
 class TestNicheResearch:
@@ -24,9 +25,6 @@ class TestNicheResearch:
         niche_research.ubersuggest_api_client.get_keyword_report.assert_not_called()
         niche_research.keywords_repository.upsert_keyword_report.assert_not_called()
 
-    def test_should_format_name_correctly(self, niche_research: NicheResearch):
-        assert niche_research.format_name("Test Niche") == "test niche"
-
     def test_should_format_niche_name_when_fetching_new_niche(
         self, niche_research: NicheResearch
     ):
@@ -35,13 +33,10 @@ class TestNicheResearch:
 
         # Setup mocks
         niche_research.google_suggest_client.get_suggestions = Mock(return_value=[])
-        niche_research.format_name = MagicMock(return_value="example")
 
-        # Act
-        niche_research.fetch_data("Test Niche")
-
-        # Assert
-        niche_research.format_name.assert_called_once_with("Test Niche")
+        with patch("app.domain.niche_research.format_niche_name") as format_niche_name:
+            niche_research.fetch_data("Test Niche")
+            format_niche_name.assert_called_once_with("Test Niche")
 
     def test_should_fetch_keyword_suggestions_for_primary_keyword_when_fetching_new_niche(
         self, niche_research: NicheResearch
