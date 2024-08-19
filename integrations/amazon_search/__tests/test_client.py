@@ -2,7 +2,7 @@ from unittest.mock import patch
 import pytest
 
 
-from app.exceptions.data import DataFetchError
+from app.exceptions import DataFetchError
 from integrations.amazon_search.client import AmazonSearchClient
 
 

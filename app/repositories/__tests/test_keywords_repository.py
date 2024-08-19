@@ -4,6 +4,7 @@ import pytest
 from sqlmodel import delete, select
 from sqlalchemy.orm import joinedload
 
+from app.exceptions import NotFoundError
 from app.interfaces.dtos.keyword_report import KeywordReport
 from app.repositories.keywords_repository import KeywordsRepository
 from database.connection import DatabaseConnection
@@ -310,6 +311,12 @@ class TestKeywordsRepository:
             assert (
                 suggestion_set.suggested_keywords[2].keyword == "match suggestion 3"
             )
+
+    def test_should_raise_not_found_error_when_trying_to_upsert_with_a_non_existing_niche(
+        self, keywords_respository: KeywordsRepository, keyword_report: KeywordReport
+    ):
+        with pytest.raises(NotFoundError):
+            keywords_respository.upsert_keyword_report(keyword_report, 9999)
 
     def test_should_return_existing_keyword_when_searching(
         self,

@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import MagicMock
 
-from app.exceptions.data import DataFetchError
+from app.exceptions import DataFetchError
 from integrations.google_suggest.client import GoogleSuggestClient
 
 

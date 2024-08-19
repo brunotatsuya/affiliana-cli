@@ -4,6 +4,7 @@ from datetime import datetime
 from sqlmodel import select
 from sqlalchemy.orm import joinedload
 
+from app.exceptions import NotFoundError
 from app.interfaces.dtos.keyword_report import KeywordReport
 from database.connection import DatabaseConnection
 from database.models import (
@@ -41,12 +42,12 @@ class KeywordsRepository(BaseRepository):
             Keyword: The inserted keyword object.
 
         Raises:
-            Exception: If an error occurs during the insertion process.
+            NotFoundError: If an error occurs during the insertion process.
         """
         # Find the niche
         db_niche = self.niches_repo.find_niche_by_id(niche_id)
         if not db_niche:
-            raise Exception(f"Niche with ID {niche_id} not found.")
+            raise NotFoundError(f"Niche with ID {niche_id} not found.")
 
         with self.conn.session() as session:
 
