@@ -1,7 +1,7 @@
 from typing import List
 import inject
 
-from app.exceptions.data import DataFetchError
+from app.exceptions import DataFetchError
 from app.interfaces.dtos.amazon_product_snapshot import AmazonProductSnapshot
 from integrations.amazon_search.formatters import format_search
 from integrations.constants import HttpMethodEnum

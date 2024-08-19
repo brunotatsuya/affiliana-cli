@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 from functional import seq
 
-from app.exceptions.data import DataFormatError
+from app.exceptions import DataFormatError
 from app.interfaces.dtos.amazon_product_snapshot import AmazonProductSnapshot
 
 

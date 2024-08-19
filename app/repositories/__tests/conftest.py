@@ -1,5 +1,7 @@
+from datetime import datetime
 import pytest
 
+from app.interfaces.dtos.amazon_product_snapshot import AmazonProductSnapshot
 from app.interfaces.dtos.keyword_report import KeywordReport
 
 
@@ -95,5 +97,20 @@ def keyword_report():
                     "updated_at": "2021-01-01T00:00:00",
                 },
             ],
+        }
+    )
+
+@pytest.fixture
+def amazon_product_snapshot():
+    return AmazonProductSnapshot.model_validate(
+        {
+            "asin": "B07H8L85PS",
+            "title": "Test Product",
+            "is_sponsored": True,
+            "price_usd": 100.0,
+            "rating": 4.5,
+            "reviews": 1000,
+            "bought_last_month": 1000,
+            "seen_at": datetime(2021, 1, 1),
         }
     )
