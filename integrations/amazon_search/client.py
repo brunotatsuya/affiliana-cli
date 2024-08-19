@@ -1,6 +1,8 @@
+from typing import List
 import inject
 
 from app.exceptions.data import DataFetchError
+from app.interfaces.dtos.amazon_product_snapshot import AmazonProductSnapshot
 from integrations.amazon_search.formatters import format_search
 from integrations.constants import HttpMethodEnum
 from integrations.retriable_http_client import RetriableHttpClient
@@ -36,7 +38,7 @@ class AmazonSearchClient:
 
         return response.text
 
-    def get_products_for_keyword(self, keyword: str) -> list:
+    def get_products_for_keyword(self, keyword: str) -> List[AmazonProductSnapshot]:
         """
         Searches Amazon for a keyword and returns a list of products.
 
