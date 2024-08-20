@@ -17,3 +17,4 @@ class Config(BaseSettings):
     POSTGRES_DB: str
     ECHO_POSTGRES: bool
     PROXY_PROVIDER_CREDENTIALS: str
+    OPENAI_API_KEY: str
