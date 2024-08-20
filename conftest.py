@@ -7,6 +7,7 @@ from alembic import command
 from config import Config, setup_injector
 from monitoring import Logger
 from app.domain import ProductResearch, NicheResearch
+from integrations.openai_api.client import OpenAIApiClient
 from integrations.retriable_http_client import RetriableHttpClient
 
 
@@ -16,6 +17,7 @@ def injector_config(binder):
     binder.bind(RetriableHttpClient, MagicMock())
     binder.bind(NicheResearch, MagicMock())
     binder.bind(ProductResearch, MagicMock())
+    binder.bind(OpenAIApiClient, MagicMock())
 
 
 def run_migrations_psql():
