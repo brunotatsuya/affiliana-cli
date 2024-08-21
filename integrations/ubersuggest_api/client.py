@@ -1,3 +1,4 @@
+from typing import List
 import inject
 
 from app.exceptions import (
@@ -193,6 +194,26 @@ class UbersuggestAPIClient:
         }
         return self.__make_request(HttpMethodEnum.POST, uri, json=body)
 
+    def get_domain_counts(self, urls: List[str]) -> dict:
+        """
+        Retrieves domain counts from the Ubersuggest API.
+
+        Args:
+            urls (list): A list of URLs to retrieve domain counts for.
+
+        Returns:
+            dict: A dictionary containing the retrieved domain counts.
+
+        Raises:
+            DataFetchError: If the request to the Ubersuggest API fails.
+
+        """
+        uri = f"{self.base_uri}/domain_counts"
+        body = {
+            "domains": urls,
+        }
+        return self.__make_request(HttpMethodEnum.POST, uri, json=body)
+
     def get_keyword_report(
         self,
         keyword: str,
@@ -222,11 +243,16 @@ class UbersuggestAPIClient:
 
         matching_keywords = self.get_matching_keywords(keyword, language, loc_id)
         serp_analysis = self.get_serp_analysis(keyword, language, loc_id)
+        
+        # Extract the first 20 URLs from the SERP analysis to get domain counts
+        urls = [entry["url"] for entry in serp_analysis["serpEntries"][:20]]
+        domain_counts = self.get_domain_counts(urls)
 
         return format_get_keyword_report(
             keyword_info,
             matching_keywords,
             serp_analysis,
+            domain_counts,
             language,
             loc_id,
         )

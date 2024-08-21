@@ -123,6 +123,22 @@ class TestUbersuggestAPIClientSuccessfulRequests:
 
         assert get_serp_analysis_response == serp_analysis
 
+    def test_should_return_domain_counts_if_request_suceeds(
+        self, ubersuggest_api_client: UbersuggestAPIClient, domain_counts: dict
+    ):
+        ubersuggest_api_client.http_client.request.return_value.json = MagicMock(
+            return_value=domain_counts
+        )
+
+        get_domain_counts_response = ubersuggest_api_client.get_domain_counts(
+            [
+                "http://www.chewy.com/b/toys-326",
+                "http://www.meowingtons.com/collections/cat-toys",
+            ]
+        )
+
+        assert get_domain_counts_response == domain_counts
+
 
 class TestUbersuggestAPIClientFailingRequests:
 
@@ -159,3 +175,14 @@ class TestUbersuggestAPIClientFailingRequests:
     ):
         with pytest.raises(DataFetchError):
             ubersuggest_api_client.get_serp_analysis("cat toys")
+
+    def test_should_raise_exception_if_get_domain_counts_request_fails(
+        self, ubersuggest_api_client: UbersuggestAPIClient
+    ):
+        with pytest.raises(DataFetchError):
+            ubersuggest_api_client.get_domain_counts(
+                [
+                    "http://www.chewy.com/b/toys-326",
+                    "http://www.meowingtons.com/collections/cat-toys",
+                ]
+            )

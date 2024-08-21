@@ -1,0 +1,16 @@
+{
+    "domain_data": {
+        "http://www.chewy.com/b/toys-326": {
+            "backlinks": 2828,
+            "refdomains": 160,
+            "nofollow_backlinks": 200,
+            "dofollow_backlinks": 2628
+        },
+        "http://www.meowingtons.com/collections/cat-toys": {
+            "backlinks": 57,
+            "refdomains": 22,
+            "nofollow_backlinks": 29,
+            "dofollow_backlinks": 28
+        }
+    }
+}
