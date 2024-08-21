@@ -24,6 +24,10 @@ class SERPAnalysisItem(SQLModel, table=True):
     linkedin_shares: Optional[int] = None
     google_shares: Optional[int] = None
     reddit_shares: Optional[int] = None
+    backlinks: Optional[int] = None
+    referring_domains: Optional[int] = None
+    nofollow_backlinks: Optional[int] = None
+    dofollow_backlinks: Optional[int] = None
 
     created_at: datetime.datetime
 

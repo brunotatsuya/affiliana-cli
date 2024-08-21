@@ -40,50 +40,55 @@ def extract_and_filter_kws(kws_list: List, language: str, loc_id: int, tp: str):
     )
 
 
-def extract_serp_entries(serp_entries: List) -> List:
+def extract_serp_entries(serp_entries: List, domains_metrics: dict) -> List:
     """
     Extracts SERP data from a list of SERP entries.
 
     Args:
         serp_entries (List): A list of SERP entries.
+        domains_metrics (dict): A dict containing metrics data for domains.
 
     Returns:
         List: A list of SERP entries with correct key names.
 
     """
-    return (
-        seq(serp_entries)
-        .map(
-            lambda e: e
+    extracted_entries = []
+
+    for entry in serp_entries:
+        domain_metrics_for_url = domains_metrics.get(entry["url"])
+
+        domain_metrics_for_entry = (
+            {
+                "backlinks": domain_metrics_for_url["backlinks"],
+                "referring_domains": domain_metrics_for_url["refdomains"],
+                "nofollow_backlinks": domain_metrics_for_url["nofollow_backlinks"],
+                "dofollow_backlinks": domain_metrics_for_url["dofollow_backlinks"],
+            }
+            if domain_metrics_for_url
+            else {}
+        )
+
+        extracted_entries.append(
+            entry
+            | domain_metrics_for_entry
             | {
-                "domain_authority": (
-                    e.get("domainAuthority") if e.get("domainAuthority") else None
-                ),
-                "facebook_shares": (
-                    e.get("facebookShares") if e.get("facebookShares") else None
-                ),
-                "pinterest_shares": (
-                    e.get("pinterestShares") if e.get("pinterestShares") else None
-                ),
-                "linkedin_shares": (
-                    e.get("linkedinShares") if e.get("linkedinShares") else None
-                ),
-                "google_shares": (
-                    e.get("googleShares") if e.get("googleShares") else None
-                ),
-                "reddit_shares": (
-                    e.get("redditShares") if e.get("redditShares") else None
-                ),
+                "domain_authority": entry.get("domainAuthority") or None,
+                "facebook_shares": entry.get("facebookShares") or None,
+                "pinterest_shares": entry.get("pinterestShares") or None,
+                "linkedin_shares": entry.get("linkedinShares") or None,
+                "google_shares": entry.get("googleShares") or None,
+                "reddit_shares": entry.get("redditShares") or None,
             }
         )
-        .to_list()
-    )
+
+    return extracted_entries
 
 
 def format_get_keyword_report(
     keyword_info: dict,
     matching_keywords: dict,
     serp_analysis: dict,
+    domain_counts: dict,
     language: str,
     loc_id: int,
 ) -> KeywordReport:
@@ -94,6 +99,7 @@ def format_get_keyword_report(
         keyword_info (dict): Information about the keyword.
         matching_keywords (dict): Matching keywords.
         serp_analysis (dict): SERP (Search Engine Results Page) analysis data.
+        domain_counts (dict): Count data for domains.
         language (str): The language of the keywords.
         loc_id (int): The location ID.
 
@@ -105,7 +111,9 @@ def format_get_keyword_report(
         matching_keywords["suggestions"], language, loc_id, "MATCH"
     )
 
-    serp_entries = extract_serp_entries(serp_analysis["serpEntries"])
+    serp_entries = extract_serp_entries(
+        serp_analysis["serpEntries"], domain_counts["domain_data"]
+    )
 
     formatted_data = {
         "info": {

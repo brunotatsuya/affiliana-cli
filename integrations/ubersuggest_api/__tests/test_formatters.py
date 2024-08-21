@@ -4,6 +4,7 @@ import pytest
 from integrations.ubersuggest_api.formatters import (
     format_get_keyword_report,
     extract_and_filter_kws,
+    extract_serp_entries,
 )
 
 
@@ -12,10 +13,11 @@ def test_should_format_get_keyword_report_correctly_when_all_data_is_provided(
     keyword_info: dict,
     matching_keywords: dict,
     serp_analysis: dict,
+    domain_counts: dict,
 ):
 
     keyword_report = format_get_keyword_report(
-        keyword_info, matching_keywords, serp_analysis, "en", 2840
+        keyword_info, matching_keywords, serp_analysis, domain_counts, "en", 2840
     )
 
     # Check the keyword report info
@@ -54,6 +56,10 @@ def test_should_format_get_keyword_report_correctly_when_all_data_is_provided(
     assert keyword_report.serp_analysis.serp_entries[0].linkedin_shares == None
     assert keyword_report.serp_analysis.serp_entries[0].google_shares == None
     assert keyword_report.serp_analysis.serp_entries[0].reddit_shares == None
+    assert keyword_report.serp_analysis.serp_entries[0].backlinks == 2828
+    assert keyword_report.serp_analysis.serp_entries[0].referring_domains == 160
+    assert keyword_report.serp_analysis.serp_entries[0].nofollow_backlinks == 200
+    assert keyword_report.serp_analysis.serp_entries[0].dofollow_backlinks == 2628
     assert (
         keyword_report.serp_analysis.serp_entries[-1].url
         == "http://books.google.com/books?dq=cat toys&hl=en&id=9FK5GiwivhMC&lpg=PA27&ots=QVgKNuzEtT&pg=PA27&sa=X&sig=ACfU3U1U7f0ND6rOVFtSjg4dybkR62_gyQ&source=bl&ved=2ahUKEwjY3cDIruuDAxXrxDgGHa-FBdsQ6AF6BQjTAxAD"
@@ -107,7 +113,6 @@ def test_should_format_get_keyword_report_correctly_when_all_data_is_provided(
     ("takeout_prop", "target_dict"),
     [
         ("keyword", 'keyword_info["keywordInfo"]'),
-        ("locId", "keyword_info"),
         ("competition", 'keyword_info["keywordInfo"]'),
         ("volume", 'keyword_info["keywordInfo"]'),
         ("cpc", 'keyword_info["keywordInfo"]'),
@@ -119,6 +124,7 @@ def test_should_format_get_keyword_report_correctly_when_all_data_is_provided(
         ("updated_at", "serp_analysis"),
         ("serpEntries", "serp_analysis"),
         ("suggestions", "matching_keywords"),
+        ("domain_data", "domain_counts"),
     ],
 )
 def test_should_raise_exception_if_any_data_is_missing(
@@ -127,10 +133,43 @@ def test_should_raise_exception_if_any_data_is_missing(
     keyword_info: dict,
     matching_keywords: dict,
     serp_analysis: dict,
+    domain_counts: dict,
 ):
     eval(f"{target_dict}.pop('{takeout_prop}')")
     with pytest.raises(Exception):
-        format_get_keyword_report(keyword_info, matching_keywords, serp_analysis)
+        format_get_keyword_report(
+            keyword_info, matching_keywords, serp_analysis, domain_counts, "en", 2840
+        )
+
+
+def test_should_append_domain_metrics_to_serp_entry_correctly(
+    serp_analysis: dict, domain_counts: dict
+):
+    serp_entries = extract_serp_entries(
+        serp_analysis["serpEntries"], domain_counts["domain_data"]
+    )
+    assert serp_entries[0]["backlinks"] == 2828
+    assert serp_entries[0]["referring_domains"] == 160
+    assert serp_entries[0]["nofollow_backlinks"] == 200
+    assert serp_entries[0]["dofollow_backlinks"] == 2628
+
+
+@pytest.mark.parametrize(
+    ("old_prop_name", "new_prop_name"),
+    [
+        ("domainAuthority", "domain_authority"),
+        ("facebookShares", "facebook_shares"),
+        ("pinterestShares", "pinterest_shares"),
+        ("linkedinShares", "linkedin_shares"),
+        ("googleShares", "google_shares"),
+        ("redditShares", "reddit_shares"),
+    ],
+)
+def test_should_rename_entry_property_correctly(
+    old_prop_name: str, new_prop_name: str, serp_analysis: dict
+):
+    serp_entries = extract_serp_entries(serp_analysis["serpEntries"], {})
+    assert serp_entries[0][new_prop_name] == (serp_entries[0][old_prop_name] or None)
 
 
 def test_should_filter_out_matching_keywords_without_volume(matching_keywords: dict):

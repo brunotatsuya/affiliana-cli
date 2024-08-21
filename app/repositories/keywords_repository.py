@@ -103,6 +103,10 @@ class KeywordsRepository(BaseRepository):
                         linkedin_shares=entry.linkedin_shares,
                         google_shares=entry.google_shares,
                         reddit_shares=entry.reddit_shares,
+                        backlinks=entry.backlinks,
+                        referring_domains=entry.referring_domains,
+                        nofollow_backlinks=entry.nofollow_backlinks,
+                        dofollow_backlinks=entry.dofollow_backlinks,
                         created_at=keyword_report.serp_analysis.updated_at,
                         serp_analysis=serp_analysis,
                     )

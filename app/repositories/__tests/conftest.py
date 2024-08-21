@@ -37,6 +37,10 @@ def keyword_report():
                         "linkedin_shares": 100,
                         "google_shares": 100,
                         "reddit_shares": 100,
+                        "backlinks": 100,
+                        "referring_domains": 100,
+                        "nofollow_backlinks": 100,
+                        "dofollow_backlinks": 100,
                     },
                     {
                         "url": "https://example2.com",

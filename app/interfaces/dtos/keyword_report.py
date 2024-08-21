@@ -33,6 +33,10 @@ class KeywordSERPEntry(BaseModel):
     linkedin_shares: Optional[int] = None
     google_shares: Optional[int] = None
     reddit_shares: Optional[int] = None
+    backlinks: Optional[int] = None
+    referring_domains: Optional[int] = None
+    nofollow_backlinks: Optional[int] = None
+    dofollow_backlinks: Optional[int] = None
 
 class KeywordSERPAnalysis(BaseModel):
     serp_entries: List[KeywordSERPEntry]

@@ -24,3 +24,9 @@ def serp_analysis() -> dict:
     with open(webfixtures_folder / "serp_analysis.json", "r") as file:
         serp_analysis = json.load(file)
     return serp_analysis
+
+@pytest.fixture
+def domain_counts() -> dict:
+    with open(webfixtures_folder / "domain_counts.json", "r") as file:
+        domain_counts = json.load(file)
+    return domain_counts
