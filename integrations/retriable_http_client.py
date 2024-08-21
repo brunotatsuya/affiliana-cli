@@ -82,10 +82,5 @@ class RetriableHttpClient:
                     session,
                     **kwargs,
                 )
-            if response.headers.get("X-RateLimit-Remaining"):
-                self.logger.notify(
-                    f"Remaining rate limit: {response.headers.get('X-RateLimit-Remaining')}",
-                    LogTypeEnum.DEBUG,
-                )
             return response
         raise ValueError(f'Method "{method.value}" is invalid.')
