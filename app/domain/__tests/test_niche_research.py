@@ -121,10 +121,12 @@ class TestNicheResearchUpdateNichesAmazonCommissionRates:
         self, niche_research: NicheResearch
     ):
         # Setup mocks
-        niche_research.niches_repository.get_all_niches_names = Mock(return_value=[])
-        commissions_mock = [f"commission_{i}" for i in range(217)]
+        niches = [f"niche_{i}" for i in range(217)]
+        niche_research.niches_repository.get_all_niches_names = Mock(
+            return_value=niches
+        )
         niche_research.openai_api_client.get_amazon_commission_rate_for_niches = Mock(
-            return_value=commissions_mock
+            return_value=[]
         )
 
         # Act
@@ -132,23 +134,23 @@ class TestNicheResearchUpdateNichesAmazonCommissionRates:
 
         # Assert
         assert (
-            niche_research.niches_repository.update_niches_amazon_commission_rates.call_count
+            niche_research.openai_api_client.get_amazon_commission_rate_for_niches.call_count
             == 5
         )
-        niche_research.niches_repository.update_niches_amazon_commission_rates.assert_any_call(
-            commissions_mock[:50]
+        niche_research.openai_api_client.get_amazon_commission_rate_for_niches.assert_any_call(
+            niches[:50]
         )
-        niche_research.niches_repository.update_niches_amazon_commission_rates.assert_any_call(
-            commissions_mock[50:100]
+        niche_research.openai_api_client.get_amazon_commission_rate_for_niches.assert_any_call(
+            niches[50:100]
         )
-        niche_research.niches_repository.update_niches_amazon_commission_rates.assert_any_call(
-            commissions_mock[100:150]
+        niche_research.openai_api_client.get_amazon_commission_rate_for_niches.assert_any_call(
+            niches[100:150]
         )
-        niche_research.niches_repository.update_niches_amazon_commission_rates.assert_any_call(
-            commissions_mock[150:200]
+        niche_research.openai_api_client.get_amazon_commission_rate_for_niches.assert_any_call(
+            niches[150:200]
         )
-        niche_research.niches_repository.update_niches_amazon_commission_rates.assert_any_call(
-            commissions_mock[200:]
+        niche_research.openai_api_client.get_amazon_commission_rate_for_niches.assert_any_call(
+            niches[200:]
         )
 
     def test_should_update_commission_rate_for_each_niche(

@@ -95,13 +95,14 @@ class NicheResearch:
                 self.niches_repository.get_niches_names_with_no_amazon_commission_rate()
             )
 
-        # Fetch commission rates
-        commission_rates = self.openai_api_client.get_amazon_commission_rate_for_niches(
-            niches
-        )
-
-        # Update commission rates on batches of 50
-        for i in range(0, len(commission_rates), 50):
-            self.niches_repository.update_niches_amazon_commission_rates(
-                commission_rates[i : i + 50]
+        # Fetch commission rates on batches of 50
+        commission_rates = []
+        for i in range(0, len(niches), 50):
+            commission_rates += (
+                self.openai_api_client.get_amazon_commission_rate_for_niches(
+                    niches[i : i + 50]
+                )
             )
+            
+        # Update commission rates
+        self.niches_repository.update_niches_amazon_commission_rates(commission_rates)
