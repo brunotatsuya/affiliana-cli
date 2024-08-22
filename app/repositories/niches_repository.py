@@ -1,7 +1,9 @@
 from datetime import datetime
+from typing import List
 from sqlmodel import select
 from sqlalchemy.orm import joinedload
 
+from app.interfaces.dtos.niche_amazon_commission import NicheAmazonCommission
 from database.models import Niche
 from .base_repository import BaseRepository
 
@@ -76,3 +78,48 @@ class NichesRepository(BaseRepository):
             except Exception as e:
                 session.rollback()
                 raise e
+
+    def get_all_niches_names(self) -> List[str]:
+        """
+        Get the names of all niches in the database.
+
+        Returns:
+            list[str]: A list of niche names.
+        """
+        with self.conn.session() as session:
+            statement = select(Niche.name)
+            return session.exec(statement).all()
+
+    def get_niches_names_with_no_amazon_commission_rate(self) -> List[str]:
+        """
+        Get the names of all niches in the database that have no commission rate.
+
+        Returns:
+            list[str]: A list of niche names.
+        """
+        with self.conn.session() as session:
+            statement = select(Niche.name).where(Niche.amazon_commission_rate == None)
+            return session.exec(statement).all()
+
+    def update_niches_amazon_commission_rates(
+        self, commissions_fetched: NicheAmazonCommission
+    ) -> List[Niche]:
+        """
+        Update the commission rates of the specified niches.
+
+        Args:
+            commissions_fetched (List[NicheAmazonCommission]): A list of commission rates to update.
+
+        Returns:
+            List[Niche]: The updated niche objects.
+        """
+        with self.conn.session() as session:
+            updated_niches = []
+            for commission in commissions_fetched:
+                db_niche = self.find_niche(commission.niche)
+                if db_niche:
+                    db_niche.amazon_commission_rate = commission.commission_rate
+                    updated_niches.append(db_niche)
+            session.add_all(updated_niches)
+            session.commit()
+            return updated_niches

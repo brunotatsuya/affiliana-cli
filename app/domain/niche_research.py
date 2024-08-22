@@ -3,9 +3,8 @@ import inject
 from monitoring import Logger, LogTypeEnum
 from app.exceptions import NoDataFromSourceException, DataFetchError
 from app.domain.utils import format_niche_name
-from app.interfaces.dtos.keyword_report import TypedKeyword
 from app.repositories import KeywordsRepository, NichesRepository
-from integrations import GoogleSuggestClient, UbersuggestAPIClient
+from integrations import UbersuggestAPIClient, OpenAIApiClient
 
 
 class NicheResearch:
@@ -18,14 +17,14 @@ class NicheResearch:
         self,
         niches_repository: NichesRepository,
         keywords_repository: KeywordsRepository,
-        google_suggest_client: GoogleSuggestClient,
         uberssugest_api_client: UbersuggestAPIClient,
+        openai_api_client: OpenAIApiClient,
         logger: Logger,
     ):
         self.niches_repository = niches_repository
         self.keywords_repository = keywords_repository
-        self.google_suggest_client = google_suggest_client
         self.ubersuggest_api_client = uberssugest_api_client
+        self.openai_api_client = openai_api_client
         self.logger = logger
 
     def fetch_data(self, niche: str) -> None:
@@ -49,22 +48,6 @@ class NicheResearch:
 
         # Define primary keyword
         primary_kw = "best " + niche
-
-        # Build and fetch suggestion keywords
-        self.logger.notify(
-            f"Generating and fetching suggestions for primary keyword '{primary_kw}'",
-            LogTypeEnum.INFO,
-        )
-
-        try:
-            suggestions = self.google_suggest_client.get_suggestions(primary_kw)
-        except DataFetchError as e:
-            self.logger.notify(e, LogTypeEnum.ERROR)
-            return
-
-        suggestions = [
-            TypedKeyword(keyword=sk, type="SUGGESTION") for sk in suggestions
-        ]
 
         # Fetch report for primary keyword
         self.logger.notify(
@@ -96,3 +79,30 @@ class NicheResearch:
             LogTypeEnum.SUCCESS,
         )
 
+    def update_niches_amazon_commission_rates(self, force: bool = False) -> None:
+        """
+        Update the Amazon commission rates for niches in the database.
+
+        Args:
+            force (bool): If true fetches commission rates for all niches,
+            otherwise only for niches with no commission rate.
+        """
+        # Get niches names
+        if force:
+            niches = self.niches_repository.get_all_niches_names()
+        else:
+            niches = (
+                self.niches_repository.get_niches_names_with_no_amazon_commission_rate()
+            )
+
+        # Fetch commission rates on batches of 50
+        commission_rates = []
+        for i in range(0, len(niches), 50):
+            commission_rates += (
+                self.openai_api_client.get_amazon_commission_rate_for_niches(
+                    niches[i : i + 50]
+                )
+            )
+            
+        # Update commission rates
+        self.niches_repository.update_niches_amazon_commission_rates(commission_rates)

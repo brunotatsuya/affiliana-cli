@@ -7,7 +7,7 @@ from app.interfaces.dtos.niche_amazon_commission import NicheAmazonCommission
 from config.config import Config
 from integrations.openai_api.constants import AMAZON_COMMISSION_TABLE, DEFAULT_MODEL
 from integrations.openai_api.formatters import (
-    format_get_amazon_comission_rate_for_niches,
+    format_get_amazon_commission_rate_for_niches,
 )
 
 
@@ -45,7 +45,7 @@ class OpenAIApiClient:
             messages={"role": "user", "content": prompt}, model=DEFAULT_MODEL
         )
 
-    def get_amazon_comission_rate_for_niches(
+    def get_amazon_commission_rate_for_niches(
         self, niches: List[str]
     ) -> List[NicheAmazonCommission]:
         """
@@ -76,6 +76,6 @@ class OpenAIApiClient:
 
         response = self.__make_single_interaction(prompt=prompt)
 
-        return format_get_amazon_comission_rate_for_niches(
+        return format_get_amazon_commission_rate_for_niches(
             openai_response=response.choices[0].message.content, prompted_niches=niches
         )
