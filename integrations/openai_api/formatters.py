@@ -4,7 +4,7 @@ from app.interfaces.dtos.niche_amazon_commission import NicheAmazonCommission
 from integrations.openai_api.constants import AMAZON_COMMISSION_TABLE
 
 
-def format_get_amazon_comission_rate_for_niches(
+def format_get_amazon_commission_rate_for_niches(
     openai_response: str, prompted_niches: List[str]
 ) -> List[NicheAmazonCommission]:
     """
