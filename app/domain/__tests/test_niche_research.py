@@ -23,7 +23,6 @@ class TestNicheResearchFetchData:
         niche_research.fetch_data("Test Niche")
 
         # Assert
-        niche_research.google_suggest_client.get_suggestions.assert_not_called()
         niche_research.ubersuggest_api_client.get_keyword_report.assert_not_called()
         niche_research.keywords_repository.upsert_keyword_report.assert_not_called()
 
@@ -34,7 +33,6 @@ class TestNicheResearchFetchData:
         niche_research.niches_repository.find_or_insert_niche.return_value.keywords = []
 
         # Setup mocks
-        niche_research.google_suggest_client.get_suggestions = Mock(return_value=[])
 
         with patch("app.domain.niche_research.format_niche_name") as format_niche_name:
             niche_research.fetch_data("Test Niche")
@@ -49,7 +47,6 @@ class TestNicheResearchFetchData:
 
         # Setup mocks
         niche_research.get_base_keywords = Mock(return_value=[])
-        niche_research.google_suggest_client.get_suggestions = Mock(return_value=[])
         niche_research.ubersuggest_api_client.get_keyword_report = Mock(
             return_value={"data": "report"}
         )
