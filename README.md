@@ -25,7 +25,7 @@ Make sure you have the following dependencies installed on your machine before p
 
 ### 2. Install packages
 
-In a terminal, navigate to the **root folder** of this repo. Then:
+In a terminal, navigate to the **root** folder of this repo. Then:
 
 ```bash
 poetry install
@@ -49,36 +49,28 @@ Create a `.env.development` file on the root folder from the `.env.example`. See
 ### 4. Setup docker
 💡*Docker is used to containerize the PostgreSQL database instance.*
 
-In a terminal, navigate to the **`/docker` folder** of this repo. Then:
+In a terminal, navigate to the **`/docker`** folder of this repo. Then:
 
 ```bash
 docker compose -f docker-compose.yml up -d
 ```
 
-This will create the `market_research` docker project with a `postgres-database` container inside of it, to be exposed to the port `6001` of your host machine (usually `localhost`). Make sure this is up and running before moving to the next step.
+>This will create the `market_research` docker project with a `postgres-database` container inside of it, to be exposed to the port `6001` of your host machine (usually `localhost`). Make sure this is up and running before moving to the next step.
 
 ### 5. Run migrations
-In a terminal, navigate to the **`/database` folder** of this repo.\
-Then, activate the virtual environment by running:
+In a terminal, navigate to the **`/database`** folder of this repo and use:
+
 ```bash
-poetry shell
-```
-Run migrations by:
-```bash
-alembic upgrade --head
+poetry run alembic upgrade head
 ```
 
 ## ▶️ Running the application
-First, make sure the `market_research` docker project has its containers up and running.\
-Then, navigate to the **root folder** of this repo and activate the virtual environment:
-```bash
-poetry shell
-```
+⚠️ First, make sure the `market_research` docker project has its containers up and running.
 
-This is a CLI application based on [Typer](https://github.com/fastapi/typer). To run a command, use:
+This is a CLI application based on [Typer](https://github.com/fastapi/typer). To run a command, navigate to the **root** folder, and use:
 
 ```bash
-python main.py COMMAND SUBCOMMAND [ARGUMENTS]
+poetry run python main.py COMMAND SUBCOMMAND [ARGUMENTS]
 ```
 
 The tree below represents the current available commands and subcommands:
@@ -94,19 +86,19 @@ main.py
 You can get useful information by using the `--help` flag at any level. For example, to check all available commands:
 
 ```bash
-python main.py --help
+poetry run python main.py --help
 ```
 
 To check available subcommands for the `niche_research` command:
 
 ```bash
-python main.py niche_research --help
+poetry run python main.py niche_research --help
 ```
 
 To verify the expected arguments for the `perform` subcommand:
 
 ```bash
-python main.py niche_research perform --help
+poetry run python main.py niche_research perform --help
 ```
 
 ## 🧪 Running unit tests
@@ -114,13 +106,13 @@ python main.py niche_research perform --help
 ### 1. Setup docker container (only once)
 💡*For testing, Docker is also used to containerize the PostgreSQL database instance.*
 
-In a terminal, navigate to the **`/docker` folder** of this repo. Then:
+In a terminal, navigate to the **`/docker`** folder of this repo. Then:
 
 ```bash
 docker compose -f docker-compose.test.yml up -d
 ```
 
-This will create the `market_research_test` docker project with a `postgres-database-test` container inside of it, to be exposed to the port `6002` of your host machine (usually `localhost`). Make sure this is up and running before moving to the next step.
+> This will create the `market_research_test` docker project with a `postgres-database-test` container inside of it, to be exposed to the port `6002` of your host machine (usually `localhost`). Make sure this is up and running before moving to the next step.
 
 
 ### 2. Run pytest
