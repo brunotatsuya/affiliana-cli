@@ -1,13 +1,3 @@
-import subprocess
+from scripts.procedures import run_with_docker
 
-from decorators import with_docker
-
-
-@with_docker(testing=True)
-def run_tests():
-    subprocess.check_call(
-        "poetry run pytest  --verbose --cov=. --ignore=docker".split(" ")
-    )
-
-if __name__ == "__main__":
-    run_tests()
+run_with_docker("poetry run pytest --verbose --cov=. --ignore=docker", testing=True)
