@@ -15,7 +15,7 @@ jobs:
       - name: Setup Docker Compose
         uses: KengoTODA/actions-setup-docker-compose@v1
         with:
-          version: "3.9"
+          version: "2.29.2"
 
       - name: Setup Python
         uses: actions/setup-python@v5
