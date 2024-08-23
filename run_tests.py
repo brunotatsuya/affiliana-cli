@@ -1,10 +1,12 @@
 import subprocess
 import time
 
-docker_compose_up = "docker compose -f docker-compose.test.yml up -d --quiet-pull"
+docker_compose_up = (
+    "docker compose -f docker/docker-compose.test.yml up -d --quiet-pull"
+)
 docker_pg_isready = "docker exec market-research-test_database pg_isready"
 run_tests = "poetry run pytest  --verbose --cov=."
-docker_compose_stop = "docker compose -f docker-compose.test.yml stop"
+docker_compose_stop = "docker compose -f docker/docker-compose.test.yml stop"
 
 
 def build_command(command):
