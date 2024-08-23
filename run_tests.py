@@ -21,9 +21,6 @@ try:
             break
         except:
             time.sleep(1)
-            pass
     subprocess.check_call(build_command(run_tests))
-except:
-    pass  # Silence error since the commands already have their own communication
 finally:
     subprocess.check_call(build_command(docker_compose_stop))
