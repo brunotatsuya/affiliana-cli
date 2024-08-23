@@ -7,7 +7,6 @@
 ![Docker](https://img.shields.io/badge/docker-blue?logo=docker)
 ![Poetry](https://img.shields.io/badge/poetry-blue?logo=poetry)
 ![Python](https://img.shields.io/badge/python-3.10-blue?logo=python)
-
 ![build](https://img.shields.io/github/actions/workflow/status/brunotatsuya/market-research/run_tests.yml)
 
 
