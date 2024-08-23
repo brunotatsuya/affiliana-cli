@@ -1,11 +1,11 @@
 version: '3.9'
 
-name: market_research_test
+name: market-research-test
 
 services:
   postgres:
     image: postgres:14
-    container_name: postgres-database-test
+    container_name: market-research-test_database
     env_file: ../.env.test
     ports:
       - 6002:5432
