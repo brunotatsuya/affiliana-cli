@@ -1,5 +1,3 @@
-[7timer API]: <http://www.7timer.info/doc.php?lang=en>
-
 <h1 align="center">Market Research</h1>
 <div align="center">
 
