@@ -12,11 +12,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Testing Database
-        uses: hoverkraft-tech/compose-action@v2.0.1
-        with:
-          compose-file: "./docker/docker-compose.test.yml"
-
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -29,4 +24,4 @@ jobs:
         run: poetry install
 
       - name: Run Tests
-        run: poetry run pytest -v --cov=. --ignore=docker
+        run: python scripts/run_tests.py

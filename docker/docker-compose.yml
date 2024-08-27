@@ -1,11 +1,9 @@
-version: '3.9'
-
-name: market_research
+name: market-research
 
 services:
   postgres:
     image: postgres:14
-    container_name: postgres-database
+    container_name: market-research_database
     env_file: ../.env.development
     ports:
       - 6001:5432
