@@ -46,31 +46,18 @@ Create a `.env.development` file on the root folder from the `.env.example`. See
 | PROXY_PROVIDER_CREDENTIALS | Credentials to connect to a proxy provider. Must be a string in the format `username:password@host:port` |
 | OPENAI_API_KEY | API key to connect with OpenAI API |
 
-### 4. Setup docker
-💡*Docker is used to containerize the PostgreSQL database instance.*
-
-In a terminal, navigate to the **`/docker`** folder of this repo. Then:
+### 4. Run migrations
+In a terminal, navigate to the **root** folder of this repo and run:
 
 ```bash
-docker compose -f docker-compose.yml up -d
-```
-
->This will create the `market_research` docker project with a `postgres-database` container inside of it, to be exposed to the port `6001` of your host machine (usually `localhost`). Make sure this is up and running before moving to the next step.
-
-### 5. Run migrations
-In a terminal, navigate to the **`/database`** folder of this repo and use:
-
-```bash
-poetry run alembic upgrade head
+python scripts/run_migrations.py
 ```
 
 ## ▶️ Running the application
-⚠️ First, make sure the `market_research` docker project has its containers up and running.
-
 This is a CLI application based on [Typer](https://github.com/fastapi/typer). To run a command, navigate to the **root** folder, and use:
 
 ```bash
-poetry run python main.py COMMAND SUBCOMMAND [ARGUMENTS]
+python scripts/run.py COMMAND SUBCOMMAND [ARGUMENTS]
 ```
 
 The tree below represents the current available commands and subcommands:
@@ -86,40 +73,26 @@ main.py
 You can get useful information by using the `--help` flag at any level. For example, to check all available commands:
 
 ```bash
-poetry run python main.py --help
+python scripts/run.py --help
 ```
 
 To check available subcommands for the `niche_research` command:
 
 ```bash
-poetry run python main.py niche_research --help
+python scripts/run.py niche_research --help
 ```
 
 To verify the expected arguments for the `perform` subcommand:
 
 ```bash
-poetry run python main.py niche_research perform --help
+python scripts/run.py niche_research perform --help
 ```
 
 ## 🧪 Running unit tests
 
-### 1. Setup docker container (only once)
-💡*For testing, Docker is also used to containerize the PostgreSQL database instance.*
-
-In a terminal, navigate to the **`/docker`** folder of this repo. Then:
-
+This uses [pytest](https://docs.pytest.org/en/latest/) for unit testing. Use the script below to run the tests with coverage report:
 ```bash
-docker compose -f docker-compose.test.yml up -d
-```
-
-> This will create the `market_research_test` docker project with a `postgres-database-test` container inside of it, to be exposed to the port `6002` of your host machine (usually `localhost`). Make sure this is up and running before moving to the next step.
-
-
-### 2. Run pytest
-
-Use the command below to run the tests with coverage report:
-```bash
-poetry run pytest -v --cov=.
+python scripts/run_tests.py
 ```
 
 *Obs: you don't need to worry about migrations as they are run everytime pytest is evoked.*
