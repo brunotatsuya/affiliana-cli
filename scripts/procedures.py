@@ -16,7 +16,7 @@ def run_with_docker(command: str, testing: Optional[bool] = False):
     dc_isready = f"docker exec {docker_container_psql_name} pg_isready".split(" ")
     dc_down = f"docker compose -f {docker_compose_file} stop".split(" ")
 
-    commands = [command.split(" ") for command in commands]
+    command = command.split(" ")
 
     try:
         subprocess.check_call(dc_up)

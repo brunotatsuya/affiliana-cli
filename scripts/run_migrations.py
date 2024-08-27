@@ -1,3 +1,3 @@
-from scripts.procedures import run_with_docker
+from procedures import run_with_docker
 
-run_with_docker("poetry run alembic upgrade head")
+run_with_docker("poetry run alembic -c database/alembic.ini upgrade head")
