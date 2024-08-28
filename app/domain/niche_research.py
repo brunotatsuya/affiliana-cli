@@ -1,7 +1,7 @@
 import inject
 
 from monitoring import Logger, LogTypeEnum
-from app.exceptions import NoDataFromSourceException, DataFetchError
+from app.exceptions import NoDataFromSourceException
 from app.domain.utils import format_niche_name
 from app.repositories import KeywordsRepository, NichesRepository
 from integrations import UbersuggestAPIClient, OpenAIApiClient
@@ -62,10 +62,10 @@ class NicheResearch:
         except NoDataFromSourceException as e:
             self.logger.notify(e, LogTypeEnum.WARNING)
             return
-        except DataFetchError as e:
+        except Exception as e:
             self.logger.notify(e, LogTypeEnum.ERROR)
             return
-
+        
         # Save report to the database
         self.logger.notify(
             f"Saving data in the database",
