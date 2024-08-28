@@ -24,7 +24,7 @@ class TestOpenAIApiClient:
         openai_api_client._OpenAIApiClient__make_single_interaction("prompt")
 
         openai_api_client.client.chat.completions.create.assert_called_once_with(
-            messages={"role": "user", "content": "prompt"}, model="gpt-4o-mini"
+            messages=[{"role": "user", "content": "prompt"}], model="gpt-4o-mini"
         )
 
     def test_should_construct_prompt_correctly_when_getting_amazon_commission_rate_for_niches(
@@ -64,7 +64,9 @@ class TestOpenAIApiClient:
         with patch(
             "integrations.openai_api.client.format_get_amazon_commission_rate_for_niches"
         ) as format_get_amazon_commission_rate_for_niches:
-            openai_api_client.get_amazon_commission_rate_for_niches(["niche1", "niche2"])
+            openai_api_client.get_amazon_commission_rate_for_niches(
+                ["niche1", "niche2"]
+            )
             format_get_amazon_commission_rate_for_niches.assert_called_once_with(
                 openai_response="0A,1B", prompted_niches=["niche1", "niche2"]
             )

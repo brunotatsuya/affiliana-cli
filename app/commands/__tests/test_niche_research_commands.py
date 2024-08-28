@@ -3,7 +3,7 @@ import inject
 import pytest
 from typer import Exit
 
-from app.commands.niche_research_commands import perform, perform_from_file
+from app.commands.niche_research_commands import perform, perform_from_file, update_niches_amazon_commission_rates
 from app.domain import NicheResearch
 
 
@@ -32,3 +32,9 @@ class TestNicheResearchCommands:
     def test_should_raise_exception_when_providing_non_existing_file(self):
         with pytest.raises(Exit):
             perform_from_file("non_existing_file.txt")
+
+    def test_should_start_update_amazon_commission_rate_passing_force_flag(
+        self, niche_research: NicheResearch
+    ):
+        update_niches_amazon_commission_rates(True)
+        assert niche_research.update_niches_amazon_commission_rates.called_with(True)

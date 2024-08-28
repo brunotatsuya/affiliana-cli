@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Optional
 import inject
 from monitoring import Logger, LogTypeEnum
 from typer import Argument, Typer, Exit
@@ -29,6 +29,21 @@ def perform_from_file_command(
     perform_from_file(filepath)
 
 
+@niche_research_typer.command("update_niches_amazon_commission_rates")
+def update_niches_amazon_commission_rates_command(
+    force: Annotated[
+        Optional[bool],
+        Argument(
+            help="Force flag. If true, will update the commission rate for all niches on the database. If false, only those without a commission rate will be updated."
+        ),
+    ] = False
+):
+    """
+    Update the Amazon commission rates for all niches.
+    """
+    update_niches_amazon_commission_rates(force)
+
+
 @inject.params(niche_research=NicheResearch)
 def perform(niche: str, niche_research: NicheResearch):
     niche_research.fetch_data(niche)
@@ -50,3 +65,8 @@ def perform_from_file(filepath: str, niche_research: NicheResearch, logger: Logg
 
     for niche in niches:
         niche_research.fetch_data(niche)
+
+
+@inject.params(niche_research=NicheResearch)
+def update_niches_amazon_commission_rates(force: bool, niche_research: NicheResearch):
+    niche_research.update_niches_amazon_commission_rates(force)

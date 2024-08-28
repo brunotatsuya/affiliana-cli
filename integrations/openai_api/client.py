@@ -42,7 +42,7 @@ class OpenAIApiClient:
         """
 
         return self.client.chat.completions.create(
-            messages={"role": "user", "content": prompt}, model=DEFAULT_MODEL
+            messages=[{"role": "user", "content": prompt}], model=DEFAULT_MODEL
         )
 
     def get_amazon_commission_rate_for_niches(

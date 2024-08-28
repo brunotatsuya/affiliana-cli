@@ -79,7 +79,7 @@ class NicheResearch:
             LogTypeEnum.SUCCESS,
         )
 
-    def update_niches_amazon_commission_rates(self, force: bool = False) -> None:
+    def update_niches_amazon_commission_rates(self, force: bool) -> None:
         """
         Update the Amazon commission rates for niches in the database.
 
@@ -95,9 +95,22 @@ class NicheResearch:
                 self.niches_repository.get_niches_names_with_no_amazon_commission_rate()
             )
 
+        if not niches:
+            self.logger.notify(
+                "No niches to update Amazon commission rates.",
+                LogTypeEnum.DEBUG,
+            )
+            return
+
         # Fetch commission rates on batches of 50
         commission_rates = []
         for i in range(0, len(niches), 50):
+            # Update commission rates
+            self.logger.notify(
+                f"Making interaction with OpenAI API for niches {i} to {i+50}",
+                LogTypeEnum.INFO,
+            )
+
             commission_rates += (
                 self.openai_api_client.get_amazon_commission_rate_for_niches(
                     niches[i : i + 50]
@@ -105,4 +118,14 @@ class NicheResearch:
             )
 
         # Update commission rates
+        self.logger.notify(
+            f"Saving commissions in the database",
+            LogTypeEnum.INFO,
+        )
+
         self.niches_repository.update_niches_amazon_commission_rates(commission_rates)
+
+        self.logger.notify(
+            f"Finished updating Amazon commission rates for niches.",
+            LogTypeEnum.SUCCESS,
+        )
