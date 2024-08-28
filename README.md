@@ -1,4 +1,4 @@
-<h1 align="center">Market Research</h1>
+<h1 align="center">Affiliana CLI</h1>
 <div align="center">
 
  

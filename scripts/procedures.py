@@ -9,7 +9,7 @@ def run_with_docker(command: str, testing: Optional[bool] = False):
         "docker/docker-compose.yml" if not testing else "docker/docker-compose.test.yml"
     )
     docker_container_psql_name = (
-        "market-research_database" if not testing else "market-research-test_database"
+        "affiliana-cli_database" if not testing else "affiliana-cli-test_database"
     )
 
     dc_up = f"docker compose -f {docker_compose_file} up -d --quiet-pull".split(" ")
