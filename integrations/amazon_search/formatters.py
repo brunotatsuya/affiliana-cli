@@ -21,7 +21,7 @@ def format_search(html: str) -> list[AmazonProductSnapshot]:
     products = []
 
     try:
-        soup = BeautifulSoup(html)
+        soup = BeautifulSoup(html, features="html.parser")
         # Get all divs that have "data-asin" attribute
         html_products = soup.find_all("div", {"data-asin": True})
         # Filter out products that have "data-asin" attribute equal to ""
