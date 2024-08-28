@@ -90,7 +90,7 @@ python scripts/run.py niche_research perform --help
 
 ## 🧪 Running unit tests
 
-This uses [pytest](https://docs.pytest.org/en/latest/) for unit testing. Use the script below to run the tests with coverage report:
+This uses [pytest](https://docs.pytest.org/en/latest) for unit testing. Use the script below to run the tests with coverage report:
 ```bash
 python scripts/run_tests.py
 ```
