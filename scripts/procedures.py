@@ -1,8 +1,8 @@
 import subprocess
+import shlex
 import time
 
 from typing import Optional
-
 
 def run_with_docker(command: str, testing: Optional[bool] = False):
     docker_compose_file = (
@@ -16,7 +16,7 @@ def run_with_docker(command: str, testing: Optional[bool] = False):
     dc_isready = f"docker exec {docker_container_psql_name} pg_isready".split(" ")
     dc_down = f"docker compose -f {docker_compose_file} stop".split(" ")
 
-    command = command.split(" ")
+    command = shlex.split(command)
 
     try:
         subprocess.check_call(dc_up)
