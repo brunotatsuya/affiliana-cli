@@ -65,7 +65,7 @@ class NicheResearch:
         except Exception as e:
             self.logger.notify(e, LogTypeEnum.ERROR)
             return
-        
+
         # Save report to the database
         self.logger.notify(
             f"Saving data in the database",
@@ -103,6 +103,6 @@ class NicheResearch:
                     niches[i : i + 50]
                 )
             )
-            
+
         # Update commission rates
         self.niches_repository.update_niches_amazon_commission_rates(commission_rates)
