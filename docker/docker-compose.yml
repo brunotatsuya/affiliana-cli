@@ -1,7 +1,7 @@
 name: affiliana-cli
 
 services:
-  postgres:
+  database:
     image: postgres:14
     container_name: affiliana-cli_database
     env_file: ../.env.development
@@ -9,3 +9,11 @@ services:
       - 6001:5432
     volumes:
       - ./db/pgsql:/var/lib/postgresql/data
+  database-test:
+    image: postgres:14
+    container_name: affiliana-cli_database-test
+    env_file: ../.env.test
+    ports:
+      - 6002:5432
+    volumes:
+      - ./db/pgsql_test:/var/lib/postgresql/data

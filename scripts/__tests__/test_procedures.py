@@ -17,31 +17,32 @@ def mock_subprocess_check_call():
 
 
 @pytest.mark.parametrize(
-    "testing, expected_docker_file, expected_docker_container_name",
+    "testing, expected_service_name",
     [
-        (True, "docker/docker-compose.test.yml", "affiliana-cli-test_database"),
-        (False, "docker/docker-compose.yml", "affiliana-cli_database"),
+        (True, "database-test"),
+        (False, "database"),
     ],
 )
-def test_should_use_correct_docker_file_and_docker_container_name_given_testing_flag(
+def test_should_use_correct_docker_container_name_given_testing_flag(
     testing: bool,
-    expected_docker_file: str,
-    expected_docker_container_name: str,
+    expected_service_name: str,
     mock_subprocess_check_call: Mock,
 ):
     run_with_docker("echo hello", testing=testing)
     mock_subprocess_check_call.assert_any_call(
-        f"docker compose -f {expected_docker_file} up -d --quiet-pull".split(" ")
+        f"docker compose -f docker/docker-compose.yml up -d {expected_service_name} --quiet-pull".split(
+            " "
+        )
     )
     mock_subprocess_check_call.assert_any_call(
-        f"docker exec {expected_docker_container_name} pg_isready".split(" ")
+        f"docker exec affiliana-cli_{expected_service_name} pg_isready".split(" ")
     )
 
 
 def test_should_run_docker_up_at_first_place(mock_subprocess_check_call: Mock):
     run_with_docker("echo hello")
     assert mock_subprocess_check_call.call_args_list[0] == call(
-        "docker compose -f docker/docker-compose.yml up -d --quiet-pull".split(" ")
+        "docker compose -f docker/docker-compose.yml up -d database --quiet-pull".split(" ")
     )
 
 
@@ -61,9 +62,7 @@ def test_should_call_pg_isready_until_dockerized_postgres_is_ready(
 
     run_with_docker("echo hello")
 
-    pg_isready_command_args = "docker exec affiliana-cli_database pg_isready".split(
-        " "
-    )
+    pg_isready_command_args = "docker exec affiliana-cli_database pg_isready".split(" ")
 
     assert mock_subprocess_check_call.call_args_list[1] == call(pg_isready_command_args)
     assert mock_subprocess_check_call.call_args_list[2] == call(pg_isready_command_args)

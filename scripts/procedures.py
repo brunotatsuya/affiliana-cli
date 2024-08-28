@@ -5,16 +5,12 @@ import time
 from typing import Optional
 
 def run_with_docker(command: str, testing: Optional[bool] = False):
-    docker_compose_file = (
-        "docker/docker-compose.yml" if not testing else "docker/docker-compose.test.yml"
-    )
-    docker_container_psql_name = (
-        "affiliana-cli_database" if not testing else "affiliana-cli-test_database"
-    )
+    service_name = "database" if not testing else "database-test"
+    docker_container_psql_name = f"affiliana-cli_{service_name}"
 
-    dc_up = f"docker compose -f {docker_compose_file} up -d --quiet-pull".split(" ")
+    dc_up = f"docker compose -f docker/docker-compose.yml up -d {service_name} --quiet-pull".split(" ")
     dc_isready = f"docker exec {docker_container_psql_name} pg_isready".split(" ")
-    dc_down = f"docker compose -f {docker_compose_file} stop".split(" ")
+    dc_down = f"docker compose -f docker/docker-compose.yml stop".split(" ")
 
     command = shlex.split(command)
 
