@@ -1,3 +1,4 @@
+import subprocess
 from unittest.mock import Mock, call, patch
 import pytest
 
@@ -34,7 +35,8 @@ def test_should_use_correct_docker_file_and_docker_container_name_given_testing_
         f"docker compose -f {expected_docker_file} up -d --quiet-pull".split(" ")
     )
     mock_subprocess_check_call.assert_any_call(
-        f"docker exec {expected_docker_container_name} pg_isready".split(" ")
+        f"docker exec {expected_docker_container_name} pg_isready".split(" "),
+        stdout=subprocess.DEVNULL,
     )
 
 
@@ -56,21 +58,30 @@ def test_should_call_pg_isready_until_dockerized_postgres_is_ready(
         Exception(),  # pg_isready = false
         None,  # pg_isready = true
         None,  # echo hello
-        None,  # docker compose down
     ]
 
     run_with_docker("echo hello")
 
-    pg_isready_command_args = "docker exec affiliana-cli_database pg_isready".split(
-        " "
-    )
+    pg_isready_command_args = "docker exec affiliana-cli_database pg_isready".split(" ")
 
-    assert mock_subprocess_check_call.call_args_list[1] == call(pg_isready_command_args)
-    assert mock_subprocess_check_call.call_args_list[2] == call(pg_isready_command_args)
-    assert mock_subprocess_check_call.call_args_list[3] == call(pg_isready_command_args)
-    assert mock_subprocess_check_call.call_args_list[4] == call(pg_isready_command_args)
-    assert mock_subprocess_check_call.call_args_list[5] == call(pg_isready_command_args)
-    assert mock_subprocess_check_call.call_args_list[6] != call(pg_isready_command_args)
+    assert mock_subprocess_check_call.call_args_list[1] == call(
+        pg_isready_command_args, stdout=subprocess.DEVNULL
+    )
+    assert mock_subprocess_check_call.call_args_list[2] == call(
+        pg_isready_command_args, stdout=subprocess.DEVNULL
+    )
+    assert mock_subprocess_check_call.call_args_list[3] == call(
+        pg_isready_command_args, stdout=subprocess.DEVNULL
+    )
+    assert mock_subprocess_check_call.call_args_list[4] == call(
+        pg_isready_command_args, stdout=subprocess.DEVNULL
+    )
+    assert mock_subprocess_check_call.call_args_list[5] == call(
+        pg_isready_command_args, stdout=subprocess.DEVNULL
+    )
+    assert mock_subprocess_check_call.call_args_list[6] != call(
+        pg_isready_command_args, stdout=subprocess.DEVNULL
+    )
 
 
 def test_should_wait_1_second_between_pg_isready_calls(
@@ -84,7 +95,6 @@ def test_should_wait_1_second_between_pg_isready_calls(
         Exception(),  # pg_isready = false
         None,  # pg_isready = true
         None,  # echo hello
-        None,  # docker compose down
     ]
 
     run_with_docker("echo hello")
@@ -99,23 +109,22 @@ def test_should_run_the_command_after_dockerized_postgres_is_ready(
         Exception(),  # pg_isready = false
         None,  # pg_isready = true
         None,  # echo hello
-        None,  # docker compose down
     ]
 
     run_with_docker("echo hello")
     assert mock_subprocess_check_call.call_args_list[3] == call("echo hello".split(" "))
 
 
-def test_should_run_docker_compose_down_after_command_is_executed(
+def test_should_run_docker_compose_down_after_command_is_executed_if_flag_is_true(
     mock_subprocess_check_call: Mock,
 ):
-    run_with_docker("echo hello")
+    run_with_docker("echo hello", stop_containers_after=True)
     assert mock_subprocess_check_call.call_args_list[-1] == call(
         "docker compose -f docker/docker-compose.yml stop".split(" ")
     )
 
 
-def test_should_run_docker_compose_down_even_if_command_fails(
+def test_should_run_docker_compose_down_even_if_command_fails_if_flag_is_true(
     mock_subprocess_check_call: Mock,
 ):
     mock_subprocess_check_call.side_effect = [
@@ -127,7 +136,7 @@ def test_should_run_docker_compose_down_even_if_command_fails(
     ]
 
     with pytest.raises(Exception):
-        run_with_docker("echo hello")
+        run_with_docker("echo hello", stop_containers_after=True)
 
     assert mock_subprocess_check_call.call_args_list[-1] == call(
         "docker compose -f docker/docker-compose.yml stop".split(" ")
