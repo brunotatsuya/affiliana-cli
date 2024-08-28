@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "market-research"
+name = "affiliana-cli"
 version = "0.1.0"
 description = ""
 authors = ["Bruno Tatsuya <brunomasunaga@gmail.com>"]

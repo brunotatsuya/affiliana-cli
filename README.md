@@ -1,11 +1,11 @@
-<h1 align="center">Market Research</h1>
+<h1 align="center">Affiliana CLI</h1>
 <div align="center">
 
  
 ![Docker](https://img.shields.io/badge/docker-blue?logo=docker)
 ![Poetry](https://img.shields.io/badge/poetry-blue?logo=poetry)
 ![Python](https://img.shields.io/badge/python-3.10-blue?logo=python)
-![build](https://github.com/brunotatsuya/market-research/actions/workflows/run_tests.yml/badge.svg)
+![build](https://github.com/brunotatsuya/affiliana-cli/actions/workflows/run_tests.yml/badge.svg)
 
 
 </div>

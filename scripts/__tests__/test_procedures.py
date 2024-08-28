@@ -19,8 +19,8 @@ def mock_subprocess_check_call():
 @pytest.mark.parametrize(
     "testing, expected_docker_file, expected_docker_container_name",
     [
-        (True, "docker/docker-compose.test.yml", "market-research-test_database"),
-        (False, "docker/docker-compose.yml", "market-research_database"),
+        (True, "docker/docker-compose.test.yml", "affiliana-cli-test_database"),
+        (False, "docker/docker-compose.yml", "affiliana-cli_database"),
     ],
 )
 def test_should_use_correct_docker_file_and_docker_container_name_given_testing_flag(
@@ -61,7 +61,7 @@ def test_should_call_pg_isready_until_dockerized_postgres_is_ready(
 
     run_with_docker("echo hello")
 
-    pg_isready_command_args = "docker exec market-research_database pg_isready".split(
+    pg_isready_command_args = "docker exec affiliana-cli_database pg_isready".split(
         " "
     )
 

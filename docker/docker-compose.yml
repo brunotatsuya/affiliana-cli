@@ -1,9 +1,9 @@
-name: market-research
+name: affiliana-cli
 
 services:
   postgres:
     image: postgres:14
-    container_name: market-research_database
+    container_name: affiliana-cli_database
     env_file: ../.env.development
     ports:
       - 6001:5432
