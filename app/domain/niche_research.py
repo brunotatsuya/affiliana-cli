@@ -1,7 +1,7 @@
 import inject
 
 from monitoring import Logger, LogTypeEnum
-from app.exceptions import NoDataFromSourceException, DataFetchError
+from app.exceptions import NoDataFromSourceException
 from app.domain.utils import format_niche_name
 from app.repositories import KeywordsRepository, NichesRepository
 from integrations import UbersuggestAPIClient, OpenAIApiClient
@@ -62,7 +62,7 @@ class NicheResearch:
         except NoDataFromSourceException as e:
             self.logger.notify(e, LogTypeEnum.WARNING)
             return
-        except DataFetchError as e:
+        except Exception as e:
             self.logger.notify(e, LogTypeEnum.ERROR)
             return
 
@@ -103,6 +103,6 @@ class NicheResearch:
                     niches[i : i + 50]
                 )
             )
-            
+
         # Update commission rates
         self.niches_repository.update_niches_amazon_commission_rates(commission_rates)
