@@ -69,11 +69,12 @@ def format_search(html: str) -> list[AmazonProductSnapshot]:
                 )
 
                 # For the reviews, find the last "span" tag that contains "a-size-base s-underline-text" class within the reviews_block_div. Its inner text is a number with commas that contains the number of reviews
-                p_data["reviews"] = int(
-                    reviews_block_div.find_all(
-                        "span", {"class": "a-size-base s-underline-text"}
-                    )[-1].text.replace(",", "")
+                reviews_data = reviews_block_div.find_all(
+                    "span", {"class": "a-size-base s-underline-text"}
                 )
+                if not reviews_data:
+                    continue
+                p_data["reviews"] = int(reviews_data[-1].text.replace(",", ""))
 
                 # For the bought last month, find the last "span" tag within the reviews_block_div. Its inner text is a string that contains the number of bought last month
                 bought_last_month = reviews_block_div.find_all("span")[-1].text.split(
