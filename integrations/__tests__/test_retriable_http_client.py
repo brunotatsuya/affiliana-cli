@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import Mock, call, patch
-from integrations.constants import HttpMethodEnum
+from integrations.constants import HttpMethodEnum, RetryStrategyEnum
 from integrations.retriable_http_client import RetriableHttpClient
 
 
@@ -79,7 +79,7 @@ class TestRetriableHttpClient:
             assert mock_sleep.call_count == 3
             assert mock_sleep.call_args_list == [call(5), call(5), call(5)]
 
-    def test_should_execute_before_retry_function_before_each_retry(
+    def test_should_execute_before_retry_function_before_each_retry_if_strategy_is_before_retry_function(
         self,
         mock_request: Mock,
         retriable_http_client: RetriableHttpClient,
@@ -90,6 +90,7 @@ class TestRetriableHttpClient:
             HttpMethodEnum.GET,
             "http://example.com",
             retry_times=3,
+            retry_strategy=RetryStrategyEnum.BEFORE_RETRY_FUNCTION,
             before_retry=before_retry,
         )
         assert before_retry.call_count == 3
@@ -106,6 +107,7 @@ class TestRetriableHttpClient:
             "http://example.com",
             headers={"old_header": "value"},
             retry_times=1,
+            retry_strategy=RetryStrategyEnum.BEFORE_RETRY_FUNCTION,
             before_retry=before_retry,
         )
         assert mock_request.call_args_list == [
@@ -118,6 +120,28 @@ class TestRetriableHttpClient:
                 "GET",
                 "http://example.com",
                 headers={"new_header": "value"},
+            ),
+        ]
+
+    def test_should_use_proxies_on_retry_if_strategy_is_use_proxy(
+        self,
+        mock_request: Mock,
+        retriable_http_client: RetriableHttpClient,
+    ):
+        mock_request.return_value.status_code = 500
+        retriable_http_client.get_proxies = Mock(return_value={"http": "proxy"})
+        retriable_http_client.request(
+            HttpMethodEnum.GET,
+            "http://example.com",
+            retry_times=1,
+            retry_strategy=RetryStrategyEnum.USE_PROXY,
+        )
+        assert mock_request.call_args_list == [
+            call("GET", "http://example.com"),
+            call(
+                "GET",
+                "http://example.com",
+                proxies={"http": "proxy"},
             ),
         ]
 

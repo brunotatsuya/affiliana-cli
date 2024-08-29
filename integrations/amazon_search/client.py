@@ -4,7 +4,7 @@ import inject
 from app.exceptions import DataFetchError
 from app.interfaces.dtos.amazon_product_snapshot import AmazonProductSnapshot
 from integrations.amazon_search.formatters import format_search
-from integrations.constants import HttpMethodEnum
+from integrations.constants import HttpMethodEnum, RetryStrategyEnum
 from integrations.retriable_http_client import RetriableHttpClient
 from fake_useragent import UserAgent
 
@@ -46,7 +46,13 @@ class AmazonSearchClient:
 
         headers["user-agent"] = self.user_agent_generator.random
 
-        response = self.http_client.request(HttpMethodEnum.GET, uri, headers=headers)
+        response = self.http_client.request(
+            HttpMethodEnum.GET,
+            uri,
+            retry_times=1,
+            retry_strategy=RetryStrategyEnum.USE_PROXY,
+            headers=headers,
+        )
 
         if response.status_code != 200:
             raise DataFetchError(
