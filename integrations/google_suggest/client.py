@@ -39,7 +39,7 @@ class GoogleSuggestClient:
             DataFetchError: If the request fails.
         """
         uri = f"{self.base_uri}/complete/search?client=chrome&q={query}&hl={language}&gl={country}"
-        response = self.http_client.request(HttpMethodEnum.GET, uri, headers={})
+        response = self.http_client.request(HttpMethodEnum.GET, uri)
         if response.status_code != 200:
             raise DataFetchError(
                 f"Failed to get suggestions: {response.text} - {response.status_code}"

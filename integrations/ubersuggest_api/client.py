@@ -8,7 +8,7 @@ from app.exceptions import (
 )
 from app.interfaces.dtos.keyword_report import KeywordReport
 from config import Config
-from integrations.constants import HttpMethodEnum
+from integrations.constants import HttpMethodEnum, RetryStrategyEnum
 from integrations.retriable_http_client import RetriableHttpClient
 from .formatters import format_get_keyword_report
 from .constants import DEFAULT_MARKET_LANGUAGE, DEFAULT_MARKET_LOCATION_ID
@@ -101,9 +101,10 @@ class UbersuggestAPIClient:
         response = self.http_client.request(
             method,
             uri,
-            headers=self.__get_request_headers(),
             retry_times=2,
+            retry_strategy=RetryStrategyEnum.BEFORE_RETRY_FUNCTION,
             before_retry=self.__before_retry,
+            headers=self.__get_request_headers(),
             **kwargs,
         )
         if response.status_code != 200:
