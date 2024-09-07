@@ -111,11 +111,17 @@ class NicheResearch:
                 LogTypeEnum.INFO,
             )
 
-            commission_rates += (
-                self.openai_api_client.get_amazon_commission_rate_for_niches(
-                    niches[i : i + 50]
+            try:
+                commission_rates += (
+                    self.openai_api_client.get_amazon_commission_rate_for_niches(
+                        niches[i : i + 50]
+                    )
                 )
-            )
+            except Exception as e:
+                self.logger.notify(
+                    f"Failed getting commission rates for niches: {e}",
+                    LogTypeEnum.ERROR,
+                )
 
         # Update commission rates
         self.logger.notify(
@@ -130,20 +136,16 @@ class NicheResearch:
             LogTypeEnum.SUCCESS,
         )
 
-    def fetch_data_from_gpt_ideas(self, iterations: int) -> None:
+    def fetch_data_from_gpt_ideas(self) -> None:
         """
         Fetch data for niches from GPT ideas.
-
-        Args:
-            iterations (int): The number of times we want to reach GPT to get niche ideas.
         """
-        for i in range(1, iterations + 1):
-            self.logger.notify(
-                f"Making interaction with OpenAI API for ideas ({i} of {iterations} iterations)",
-                LogTypeEnum.INFO,
-            )
+        self.logger.notify(
+            f"Making interaction with OpenAI API for ideas",
+            LogTypeEnum.INFO,
+        )
 
-            niche_ideas = self.openai_api_client.get_niche_ideas()
+        niche_ideas = self.openai_api_client.get_niche_ideas()
 
-            for niche in niche_ideas:
-                self.fetch_data(niche)
+        for niche in niche_ideas:
+            self.fetch_data(niche)

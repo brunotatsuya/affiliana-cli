@@ -19,6 +19,6 @@ def setup_logger():
             LogTypeEnum.INFO,
             LogTypeEnum.WARNING,
             LogTypeEnum.ERROR,
-            LogTypeEnum.DEBUG,
+            #LogTypeEnum.DEBUG,
         ],
     )
