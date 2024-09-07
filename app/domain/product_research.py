@@ -1,6 +1,7 @@
 import inject
 
 from app.domain.utils import format_niche_name
+from app.exceptions import DataFormatError
 from monitoring import Logger, LogTypeEnum
 from integrations import AmazonSearchClient
 from app.repositories import AmazonProductsRepository, NichesRepository
@@ -56,3 +57,31 @@ class ProductResearch:
             f"Finished fetching amazon products for '{niche}'",
             LogTypeEnum.SUCCESS,
         )
+
+    def fetch_amazon_products_for_candidates(self) -> None:
+        """
+        Fetches Amazon products for all niche candidates.
+        """
+
+        self.logger.notify(
+            "Calculating niche candidates",
+            LogTypeEnum.INFO,
+        )
+
+        niches = self.niches_repository.get_niche_candidates(700, 30)
+
+        for niche in niches:
+            if self.amazon_products_repository.get_amazon_products_for_niche(niche.id):
+                self.logger.notify(
+                    f"Skipping niche '{niche.name}' because it already has products fetched",
+                    LogTypeEnum.DEBUG,
+                )
+                continue
+
+            try:
+                self.fetch_amazon_products_for_niche(niche.name)
+            except DataFormatError as e:
+                self.logger.notify(
+                    f"Error while fetching products for niche '{niche.name}': {str(e)}",
+                    LogTypeEnum.ERROR,
+                )
