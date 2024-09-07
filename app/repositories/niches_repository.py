@@ -3,7 +3,7 @@ from typing import List
 from sqlmodel import select
 from sqlalchemy.orm import joinedload
 from functional import seq
-
+import statistics
 
 from app.interfaces.dtos.niche_amazon_commission import NicheAmazonCommission
 from database.models import Niche, Keyword
@@ -149,6 +149,60 @@ class NichesRepository(BaseRepository):
                 .to_list()
             )
 
+    def get_statistics_for_candidate(self, niche: Niche):
+        """
+        For a given niche, calculate the statistics for it and its keywords.
+
+        Args:
+            niche (Niche): The niche to calculate statistics for.
+
+        Returns:
+            dict: A dictionary containing the calculated statistics.
+        """
+        with self.conn.session() as session:
+            session.add(niche)
+            amazon_products = [
+                p
+                for p in niche.amazon_products
+                if p.is_sponsored == False and p.rating is not None and p.rating >= 4.0
+            ]
+
+            keywords_statistics = []
+            for k in niche.keywords:
+                keyword_statistics = self.__get_statistics_for_candidate_keyword(k)
+                if keyword_statistics:
+                    keywords_statistics.append(keyword_statistics)
+
+                for ss in k.suggestion_sets:
+                    for suggested_keyword in ss.suggested_keywords:
+                        keyword_statistics = (
+                            self.__get_statistics_for_candidate_keyword(
+                                suggested_keyword
+                            )
+                        )
+                        if keyword_statistics:
+                            keywords_statistics.append(keyword_statistics)
+
+            statistics = {
+                "niche": niche.name,
+                "amazon_commission_rate": niche.amazon_commission_rate,
+                "amazon_products_price": self.__calculate_descriptive_statistics(
+                    amazon_products, "price_usd"
+                ),
+                "amazon_products_reviews": self.__calculate_descriptive_statistics(
+                    amazon_products, "reviews"
+                ),
+                "amazon_products_ratings": self.__calculate_descriptive_statistics(
+                    amazon_products, "rating"
+                ),
+                "amazon_products_bought": self.__calculate_descriptive_statistics(
+                    amazon_products, "bought_last_month"
+                ),
+                "keywords": keywords_statistics,
+            }
+
+            return statistics
+
     def __check_if_niche_is_valid_candidate(
         self, niche: Niche, minimum_volume: int, maximum_da: int
     ) -> bool:
@@ -214,3 +268,88 @@ class NichesRepository(BaseRepository):
             item.domain_authority != None and item.domain_authority <= maximum_da
             for item in top_n_items
         )
+
+    def __get_statistics_for_candidate_keyword(self, keyword: Keyword):
+        """
+        Calculate statistics for a candidate keyword.
+
+        Args:
+            keyword (Keyword): The keyword to calculate statistics for.
+
+        Returns:
+            dict: A dictionary containing the calculated statistics.
+        """
+        if not keyword.metrics_reports or not keyword.serp_analyses:
+            return None
+
+        target_report = keyword.metrics_reports[-1]
+        target_serp_analysis = keyword.serp_analyses[-1]
+        serp_analysis_items = [
+            item for item in target_serp_analysis.analysis_items if item.position <= 10
+        ]
+        serp_analysis_items.sort(key=lambda x: x.position)
+
+        return {
+            "keyword": keyword.keyword,
+            "volume": target_report.volume,
+            "domains_with_DA_under_30": len(
+                [
+                    item
+                    for item in serp_analysis_items
+                    if item.domain_authority and item.domain_authority <= 30
+                ]
+            ),
+            "da_top_1": serp_analysis_items[0].domain_authority,
+            "da_top_2": serp_analysis_items[1].domain_authority,
+            "da_top_3": serp_analysis_items[2].domain_authority,
+            "da": self.__calculate_descriptive_statistics(
+                serp_analysis_items, "domain_authority"
+            ),
+            "backlinks": self.__calculate_descriptive_statistics(
+                serp_analysis_items, "backlinks"
+            ),
+            "referring_domains": self.__calculate_descriptive_statistics(
+                serp_analysis_items, "referring_domains"
+            ),
+            "nofollow_backlinks": self.__calculate_descriptive_statistics(
+                serp_analysis_items, "nofollow_backlinks"
+            ),
+            "dofollow_backlinks": self.__calculate_descriptive_statistics(
+                serp_analysis_items, "dofollow_backlinks"
+            ),
+        }
+
+    def __calculate_descriptive_statistics(self, values: List[object], key: str):
+        """
+        Calculate descriptive statistics for a list of values.
+
+        Args:
+            values (List[object]): The values to calculate statistics for.
+            key (str): The key to use for the statistics.
+
+        Returns:
+            dict: A dictionary containing the calculated statistics.
+        """
+        key_values = [getattr(v, key) for v in values if getattr(v, key) is not None]
+        if not key_values:
+            return {
+                "max": None,
+                "min": None,
+                "avg": None,
+                "stdv": None
+            }
+
+        return {
+            "max": max(
+                [getattr(v, key) for v in values if getattr(v, key) is not None]
+            ),
+            "min": min(
+                [getattr(v, key) for v in values if getattr(v, key) is not None]
+            ),
+            "avg": statistics.mean(
+                [getattr(v, key) for v in values if getattr(v, key) is not None]
+            ),
+            "stdv": statistics.stdev(
+                [getattr(v, key) for v in values if getattr(v, key) is not None]
+            ) if len(key_values) > 2 else 0,
+        }
