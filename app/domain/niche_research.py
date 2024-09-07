@@ -129,3 +129,21 @@ class NicheResearch:
             f"Finished updating Amazon commission rates for niches.",
             LogTypeEnum.SUCCESS,
         )
+
+    def fetch_data_from_gpt_ideas(self, iterations: int) -> None:
+        """
+        Fetch data for niches from GPT ideas.
+
+        Args:
+            iterations (int): The number of times we want to reach GPT to get niche ideas.
+        """
+        for i in range(1, iterations + 1):
+            self.logger.notify(
+                f"Making interaction with OpenAI API for ideas ({i} of {iterations} iterations)",
+                LogTypeEnum.INFO,
+            )
+
+            niche_ideas = self.openai_api_client.get_niche_ideas()
+
+            for niche in niche_ideas:
+                self.fetch_data(niche)

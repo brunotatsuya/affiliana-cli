@@ -8,6 +8,7 @@ from config.config import Config
 from integrations.openai_api.constants import AMAZON_COMMISSION_TABLE, DEFAULT_MODEL
 from integrations.openai_api.formatters import (
     format_get_amazon_commission_rate_for_niches,
+    format_get_niche_ideas,
 )
 
 
@@ -44,6 +45,30 @@ class OpenAIApiClient:
         return self.client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}], model=DEFAULT_MODEL
         )
+
+    def get_niche_ideas(self) -> List[str]:
+        """
+        Leverage AI to generate niche ideas.
+
+        Returns:
+            List[str]: A list of niche ideas.
+        """
+
+        prompt = (
+            "Present 200 niches, respecting the following requirements:"
+            + "\n1. The niche should be attractive on the United States so you can construct an affiliate business through a blog website ranked organically on Google."
+            + "\n2. The niche should be low competitive. It is expected to be relatively easy to rank on Google search through SEO organically."
+            + "\n3. The niche cannot be seasonal and should have good longevity."
+            + "\n4. The niche should not evolve fast, meaning, should not be frequently updated."
+            + "\n5. The volume for organic traffic considering buy intent keywords should be between 1k and 10k per month."
+            + "\n6. The products to sell as an affiliate should be something you can buy in Amazon, but above the 100 dollars."
+            + "\n\nDo not use 'for' specific audience or other qualifier/adjectives like 'high-end', 'luxury', 'high-quality', etc. Keep it clean."
+            + "\nYour response should be given in a single string in the format: niche1,niche2,niche3,..."
+        )
+
+        response = self.__make_single_interaction(prompt=prompt)
+        
+        return format_get_niche_ideas(openai_response=response.choices[0].message.content)
 
     def get_amazon_commission_rate_for_niches(
         self, niches: List[str]

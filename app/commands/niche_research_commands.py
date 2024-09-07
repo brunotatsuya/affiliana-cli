@@ -29,6 +29,21 @@ def perform_from_file_command(
     perform_from_file(filepath)
 
 
+@niche_research_typer.command("perform_from_gpt_ideas")
+def perform_from_gpt_ideas_command(
+    iterations: Annotated[
+        Optional[int],
+        Argument(
+            help="The number of times we want to reach GPT to get niche ideas. Every time we get 200 ideas."
+        ),
+    ] = 1
+):
+    """
+    Perform niche research based on niches provided in a file.
+    """
+    perform_from_gpt_ideas(iterations)
+
+
 @niche_research_typer.command("update_niches_amazon_commission_rates")
 def update_niches_amazon_commission_rates_command(
     force: Annotated[
@@ -70,3 +85,8 @@ def perform_from_file(filepath: str, niche_research: NicheResearch, logger: Logg
 @inject.params(niche_research=NicheResearch)
 def update_niches_amazon_commission_rates(force: bool, niche_research: NicheResearch):
     niche_research.update_niches_amazon_commission_rates(force)
+
+
+@inject.params(niche_research=NicheResearch)
+def perform_from_gpt_ideas(iterations: int, niche_research: NicheResearch):
+    niche_research.fetch_data_from_gpt_ideas(iterations)

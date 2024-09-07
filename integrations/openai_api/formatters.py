@@ -4,6 +4,26 @@ from app.interfaces.dtos.niche_amazon_commission import NicheAmazonCommission
 from integrations.openai_api.constants import AMAZON_COMMISSION_TABLE
 
 
+def format_get_niche_ideas(openai_response: str) -> List[str]:
+    """
+    Format the OpenAI response to retrieve niche ideas.
+
+    Args:
+        openai_response (str): The OpenAI response containing the niche ideas.
+
+    Returns:
+        List[str]: A list of niche ideas.
+
+    Raises:
+        DataFormatError: If there is an error formatting the OpenAI response.
+    """
+
+    try:
+        return openai_response.split(",")
+    except Exception as e:
+        raise DataFormatError(f"Error formatting OpenAI response: {e}")
+
+
 def format_get_amazon_commission_rate_for_niches(
     openai_response: str, prompted_niches: List[str]
 ) -> List[NicheAmazonCommission]:
