@@ -50,7 +50,7 @@ def format_search(html: str) -> list[AmazonProductSnapshot]:
             price_span = price_recipe_div.find("span", {"class": "a-price-whole"})
             if not price_span:
                 continue
-            price = float(price_span.text)
+            price = float(price_span.text.replace(",", ""))
             price_fraction = price_recipe_div.find(
                 "span", {"class": "a-price-fraction"}
             )

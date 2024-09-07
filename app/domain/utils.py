@@ -9,6 +9,9 @@ def format_niche_name(name: str) -> str:
         str: The formatted niche name.
     """
     use_space_for = ["-"]
+    remove = ["."]
     for char in use_space_for:
         name = name.replace(char, " ")
-    return name.lower()
+    for char in remove:
+        name = name.replace(char, "")
+    return name.lower().strip()

@@ -5,7 +5,7 @@ from sqlalchemy.orm import joinedload
 from app.exceptions import NotFoundError
 from app.interfaces.dtos.amazon_product_snapshot import AmazonProductSnapshot
 from database.connection import DatabaseConnection
-from database.models import AmazonProduct
+from database.models import AmazonProduct, Niche, NicheAmazonProduct
 from .niches_repository import NichesRepository
 from .base_repository import BaseRepository
 
@@ -98,3 +98,25 @@ class AmazonProductsRepository(BaseRepository):
             except Exception as e:
                 session.rollback()
                 raise e
+
+    def get_amazon_products_for_niche(self, niche_id: int) -> list[AmazonProduct]:
+        """
+        Gets all Amazon products associated with a niche.
+
+        Args:
+            niche_id (int): The ID of the niche to get products for.
+
+        Returns:
+            List[AmazonProduct]: A list of Amazon products associated with the niche.
+        """
+        with self.conn.session() as session:
+            statement = (
+                select(AmazonProduct)
+                .join(
+                    NicheAmazonProduct,
+                    AmazonProduct.asin == NicheAmazonProduct.amazon_product_asin,
+                )
+                .join(Niche, NicheAmazonProduct.niche_id == Niche.id)
+                .where(Niche.id == niche_id)
+            )
+            return session.exec(statement).all()
