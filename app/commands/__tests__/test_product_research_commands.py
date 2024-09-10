@@ -15,4 +15,4 @@ class TestProductResearchCommands:
         self, product_research: ProductResearch
     ):
         fetch_amazon_products("cat toys")
-        assert product_research.fetch_amazon_products_for_niche.called_with("cat toys")
+        product_research.fetch_amazon_products_for_niche.assert_called_with("cat toys")
