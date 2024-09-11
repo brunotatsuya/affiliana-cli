@@ -60,16 +60,6 @@ This is a CLI application based on [Typer](https://github.com/fastapi/typer). To
 python scripts/run.py COMMAND SUBCOMMAND [ARGUMENTS]
 ```
 
-The tree below represents the current available commands and subcommands:
-```bash
-main.py
-   niche_research
-      perform
-      perform_from_file
-   product_research
-      fetch_amazon_products 
-```
-
 You can get useful information by using the `--help` flag at any level. For example, to check all available commands:
 
 ```bash
